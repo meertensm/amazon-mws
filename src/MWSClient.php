@@ -23,7 +23,7 @@ class MWSClient{
         'Marketplace_Id' => null,
         'Access_Key_ID' => null,
         'Secret_Access_Key' => null,
-        'Application_Version' => '0.0.1'
+        'Application_Version' => '0.0.6'
     ];  
     
     private $MarketplaceIds = [
@@ -79,8 +79,6 @@ class MWSClient{
         {
             $this->config[$key] = $value;
         }
-        
-        $this->config['Application_Version'] = file_get_contents('./version.txt');
         
         foreach($this->config as $key => $value)
         {
