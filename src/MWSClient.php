@@ -83,7 +83,7 @@ class MWSClient{
             $this->config[$key] = $value;
         }
         
-        $this->config['Application_Version'] = $this->gitVersion();
+        $this->config['Application_Version'] = file_get_contents('./version.txt');
         
         foreach($this->config as $key => $value)
         {
@@ -100,22 +100,6 @@ class MWSClient{
         $this->config['Region_Host'] = $this->MarketplaceIds[$this->config['Marketplace_Id']];
         $this->config['Region_Url'] = 'https://' . $this->config['Region_Host'];
         
-    }
-    
-    private function gitVersion()
-    {
-        $parts = explode('-', exec('git describe --tags'));
-        $structured = 'N/A';
-        if (strlen($parts[0])) {
-            $structured = str_replace('v', '', $parts[0]);
-            if(isset($parts[1])){
-                $structured .= '.' . $parts[1];
-            }
-            else{
-                $structured .= '.0';
-            }
-        }
-        return $structured;
     }
     
     public function listOrders(DateTime $from)
