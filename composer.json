@@ -1,0 +1,27 @@
+{
+    "name": "mcs/amazon-mws",
+    "description": "Library to interface with Amazon MWS",
+    "license": "MIT",
+    "keywords": ["amazon", "mws"],
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Michiel Meertens",
+            "email": "meertensmichiel28@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">= 5.4",
+        "tilleuls/amazon-mws-orders": "dev-master",
+        "symfony/var-dumper": "^3.0",
+        "filp/whoops": "^2.1",
+        "guzzlehttp/guzzle": "~6.0",
+        "spatie/array-to-xml": "^2.1"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "MCS\\": "src"
+        }
+    }
+}
