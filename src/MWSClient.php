@@ -83,6 +83,8 @@ class MWSClient{
             $this->config[$key] = $value;
         }
         
+        $this->config['Application_Version'] = $this->gitVersion();
+        
         foreach($this->config as $key => $value)
         {
             if(is_null($value)){
@@ -100,7 +102,21 @@ class MWSClient{
         
     }
     
-    
+    private function gitVersion()
+    {
+        $parts = explode('-', exec('git describe --tags'));
+        $structured = 'N/A';
+        if (strlen($parts[0])) {
+            $structured = str_replace('v', '', $parts[0]);
+            if(isset($parts[1])){
+                $structured .= '.' . $parts[1];
+            }
+            else{
+                $structured .= '.0';
+            }
+        }
+        return $structured;
+    }
     
     public function listOrders(DateTime $from)
     {

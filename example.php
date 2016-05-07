@@ -2,28 +2,32 @@
 
     require_once 'vendor/autoload.php';
     
-    $client = new \MCS\MWSClient([
-        'Marketplace_Id' => '',
-        'Seller_Id' => '',
-        'Access_Key_ID' => '',
-        'Secret_Access_Key' => '',
-    ]);
+    try{
 
-    // Get orders
+        $client = new \MCS\MWSClient([
+            'Marketplace_Id' => '',
+            'Seller_Id' => '',
+            'Access_Key_ID' => '',
+            'Secret_Access_Key' => '',
+        ]);
 
-    $fromDate = new DateTime('2016-01-01');
-    
-    $orders = $client->ListOrders();
+        // Get orders
+        $fromDate = new DateTime('2016-01-01');
+        $orders = $client->ListOrders($fromDate);
 
-    print_r($orders);
-    
-    // Update stock
+        print_r($orders);
+        
+        // Update stock
+        $result = $client->updateStock([
+            'sku1' => 20,
+            'sku2' => 9,
+        ]);
 
-    $result = $client->updateStock([
-        'sku1' => 20,
-        'sku2' => 9,
-    ]);
-
-    print_r($result);
+        print_r($result);
+        
+    }
+    catch(Exception $e){
+        echo $e->getMessage();    
+    }
 
    
