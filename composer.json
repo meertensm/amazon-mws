@@ -12,7 +12,6 @@
     ],
     "require": {
         "php": ">= 5.4",
-        "tilleuls/amazon-mws-orders": "dev-master",
         "symfony/var-dumper": "^3.0",
         "filp/whoops": "^2.1",
         "guzzlehttp/guzzle": "~6.0",

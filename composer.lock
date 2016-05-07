@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8b3b121eb9f582c6c602e9c2f3c223ee",
-    "content-hash": "c5a274f9e4f1eae92f4d303b75ab0b29",
+    "hash": "886f8997e95ed4d579868d466fcc7e25",
+    "content-hash": "ac301be745e9954dd2447908325b52a8",
     "packages": [
         {
             "name": "filp/whoops",
@@ -77,7 +77,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/7011740238e3468486889c194f209bba51118f95",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/58e54017e95418968bddb1b16548e2e119312776",
                 "reference": "85cb758d7367f3aaaa8ffc9269e777919c5f68bb",
                 "shasum": ""
             },
@@ -457,60 +457,12 @@
                 "dump"
             ],
             "time": "2016-04-25 11:21:08"
-        },
-        {
-            "name": "tilleuls/amazon-mws-orders",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/coopTilleuls/amazon-mws-orders.git",
-                "reference": "35c22b6bd0201e77b432380284bd8678ea47c5ad"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/coopTilleuls/amazon-mws-orders/zipball/35c22b6bd0201e77b432380284bd8678ea47c5ad",
-                "reference": "35c22b6bd0201e77b432380284bd8678ea47c5ad",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.2.8"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "src/"
-            ],
-            "authors": [
-                {
-                    "name": "Baptiste Meyer",
-                    "email": "baptiste@les-tilleuls.coop"
-                }
-            ],
-            "description": "Amazon Marketplace Web Service Orders PHP Client Library",
-            "homepage": "http://les-tilleuls.coop",
-            "keywords": [
-                "amazon",
-                "api",
-                "client",
-                "library",
-                "mws",
-                "orders"
-            ],
-            "time": "2016-04-01 12:50:11"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "tilleuls/amazon-mws-orders": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
