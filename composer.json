@@ -12,7 +12,6 @@
     ],
     "require": {
         "php": ">= 5.4",
-        "symfony/var-dumper": "^3.0",
         "filp/whoops": "^2.1",
         "guzzlehttp/guzzle": "~6.0",
         "spatie/array-to-xml": "^2.1"
