@@ -70,6 +70,12 @@ class MWSClient{
             'action' => 'SubmitFeed',
             'path' => '/',
             'date' => '2009-01-01'
+        ],
+        'GetMatchingProduct' => [
+            'method' => 'POST',
+            'action' => 'GetMatchingProduct',
+            'path' => '/Products/2011-10-01',
+            'date' => '2011-10-01'
         ]
     ];
     
@@ -97,6 +103,11 @@ class MWSClient{
         
     }
     
+    private function xmlToArray($xmlstring)
+    {
+        return json_decode(json_encode(simplexml_load_string($xmlstring)), true);
+    }
+    
     public function listOrders(DateTime $from)
     {
         $query = [
@@ -116,7 +127,7 @@ class MWSClient{
             return $response;
         }
         else{
-            return false;    
+            return [];    
         }   
     }
     
@@ -132,6 +143,100 @@ class MWSClient{
         else{
             return false;    
         }
+    }
+    
+    public function GetMatchingProduct(array $asin_array)
+    { 
+        $asin_array = array_unique($asin_array);
+        
+        if(count($asin_array) > 10){
+            throw new Exception('Maximum number of asins = 10');    
+        }
+        
+        $counter = 1;
+        $array = [];
+        
+        foreach($asin_array as $key){
+            $array['ASINList.ASIN.' . $counter] = $key; 
+            $counter++;
+        }
+        
+        $array['MarketplaceId'] = $this->config['Marketplace_Id'];
+        
+        $response = $this->request($this->endPoints['GetMatchingProduct'], $array, null, true); 
+        
+        $languages = [
+            'de-DE', 'en-EN', 'es-ES', 'fr-FR', 'it-IT', 'en-US'
+        ];
+        
+        $replace = [
+            '</ns2:ItemAttributes>' => '</ItemAttributes>'
+        ];
+        
+        foreach($languages as $language){
+            $replace['<ns2:ItemAttributes xml:lang="' . $language . '">'] = '<ItemAttributes><Language>' . $language . '</Language>';
+        }
+        
+        $replace['ns2:'] = '';
+        
+        $response = $this->xmlToArray(strtr($response, $replace));
+    
+        function is_assoc($array){
+           $keys = array_keys($array);
+           return $keys !== array_keys($keys);
+        }
+
+        //die(is_assoc(['sas' => 'sssa']));
+        //return $response;
+        if(is_assoc($response['GetMatchingProductResult'])){
+          //  $new_response = [];
+        //    $new_response[] = $response['GetMatchingProductResult'];
+        //    $response = $new_response;
+        }
+        
+        if(isset($response['GetMatchingProductResult']['@attributes'])){
+            $response['GetMatchingProductResult'] = [
+                0 => $response['GetMatchingProductResult']
+            ];    
+        }
+    
+        $found = [];
+        $not_found = [];
+        
+        if(isset($response['GetMatchingProductResult']) && is_array($response['GetMatchingProductResult'])){
+            $array = [];
+            foreach($response['GetMatchingProductResult'] as $product){
+                $asin = $product['@attributes']['ASIN'];
+                if($product['@attributes']['status'] != 'Success'){
+                    $not_found[] = $asin;    
+                }
+                else{
+                    $array = [];
+                    foreach($product['Product']['AttributeSets']['ItemAttributes'] as $key => $value){
+                        if(is_string($key) && is_string($value)){
+                            $array[$key] = $value;    
+                        }
+                    }
+                    if(isset($product['Product']['AttributeSets']['ItemAttributes']['SmallImage'])){
+                        $image = $product['Product']['AttributeSets']['ItemAttributes']['SmallImage']['URL'];
+                        $array['medium_image'] = $image;
+                        $array['small_image'] = str_replace('._SL75_', '._SL50_', $image);
+                        $array['large_image'] = str_replace('._SL75_', '', $image);;
+                    }
+                    $found[$asin] = $array;
+                }
+            }
+        }
+        
+        return [
+            'found' => $found,
+            'not_found' => $not_found
+        ];
+    
+    }
+    
+    private function calculateImageUrlsFromImage($smallImage, $size){
+        
     }
     
     public function GetReportList()
@@ -182,7 +287,7 @@ class MWSClient{
         
     }
     
-    private function request($endPoint, array $query = [], $body = null)
+    private function request($endPoint, array $query = [], $body = null, $raw = false)
     {
     
         $query = array_merge([
@@ -195,6 +300,12 @@ class MWSClient{
             'SignatureVersion' => self::SIGNATURE_VERSION,
             'Version' => $endPoint['date'],
         ], $query);
+        
+        if(isset($query['MarketplaceId'])){
+            unset(
+                $query['MarketplaceId.Id.1']
+            );
+        }
         
         try{
             
@@ -246,15 +357,20 @@ class MWSClient{
                 $requestOptions
             );
             
-            $body = simplexml_load_string((string) $response->getBody());
+            $body = (string) $response->getBody();
             
-            return json_decode(json_encode($body), true);
+            if($raw){
+                return $body;    
+            }
+            
+            return $this->xmlToArray($body);
            
         }
         catch(BadResponseException $e){
             if ($e->hasResponse()){
                 $message = $e->getResponse();
-                $message = $message->getStatusCode() . ' - ' . $message->getReasonPhrase();
+                $message = $message->getBody();
+                //$message .= $message->getStatusCode() . ' - ' . $message->getReasonPhrase();
             }
             else{
                 $message = 'An error occured';    
