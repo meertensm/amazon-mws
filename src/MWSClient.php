@@ -71,9 +71,9 @@ class MWSClient{
             'path' => '/',
             'date' => '2009-01-01'
         ],
-        'GetMatchingProduct' => [
+        'GetMatchingProductForId' => [
             'method' => 'POST',
-            'action' => 'GetMatchingProduct',
+            'action' => 'GetMatchingProductForId',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
         ]
@@ -145,25 +145,27 @@ class MWSClient{
         }
     }
     
-    public function GetMatchingProduct(array $asin_array)
+    public function GetMatchingProductForId(array $asin_array, $type = 'ASIN')
     { 
         $asin_array = array_unique($asin_array);
         
-        if(count($asin_array) > 10){
-            throw new Exception('Maximum number of asins = 10');    
+        if(count($asin_array) > 5){
+            throw new Exception('Maximum number of id\'s = 5');    
         }
         
         $counter = 1;
-        $array = [];
+        $array = [
+            'IdType' => $type
+        ];
         
         foreach($asin_array as $key){
-            $array['ASINList.ASIN.' . $counter] = $key; 
+            $array['IdList.Id.' . $counter] = $key; 
             $counter++;
         }
         
         $array['MarketplaceId'] = $this->config['Marketplace_Id'];
         
-        $response = $this->request($this->endPoints['GetMatchingProduct'], $array, null, true); 
+        $response = $this->request($this->endPoints['GetMatchingProductForId'], $array, null, true); 
         
         $languages = [
             'de-DE', 'en-EN', 'es-ES', 'fr-FR', 'it-IT', 'en-US'
@@ -180,45 +182,35 @@ class MWSClient{
         $replace['ns2:'] = '';
         
         $response = $this->xmlToArray(strtr($response, $replace));
-    
-        function is_assoc($array){
-           $keys = array_keys($array);
-           return $keys !== array_keys($keys);
-        }
-
-        //die(is_assoc(['sas' => 'sssa']));
-        //return $response;
-        if(is_assoc($response['GetMatchingProductResult'])){
-          //  $new_response = [];
-        //    $new_response[] = $response['GetMatchingProductResult'];
-        //    $response = $new_response;
-        }
         
-        if(isset($response['GetMatchingProductResult']['@attributes'])){
-            $response['GetMatchingProductResult'] = [
-                0 => $response['GetMatchingProductResult']
+        if(isset($response['GetMatchingProductForIdResult']['@attributes'])){
+            $response['GetMatchingProductForIdResult'] = [
+                0 => $response['GetMatchingProductForIdResult']
             ];    
         }
     
         $found = [];
         $not_found = [];
         
-        if(isset($response['GetMatchingProductResult']) && is_array($response['GetMatchingProductResult'])){
+        if(isset($response['GetMatchingProductForIdResult']) && is_array($response['GetMatchingProductForIdResult'])){
             $array = [];
-            foreach($response['GetMatchingProductResult'] as $product){
-                $asin = $product['@attributes']['ASIN'];
+            foreach($response['GetMatchingProductForIdResult'] as $product){
+                $asin = $product['@attributes']['Id'];
                 if($product['@attributes']['status'] != 'Success'){
                     $not_found[] = $asin;    
                 }
                 else{
                     $array = [];
-                    foreach($product['Product']['AttributeSets']['ItemAttributes'] as $key => $value){
+                    if(!isset($product['Products']['Product']['AttributeSets'])){
+                        $product['Products']['Product'] = $product['Products']['Product'][0];    
+                    }
+                    foreach($product['Products']['Product']['AttributeSets']['ItemAttributes'] as $key => $value){
                         if(is_string($key) && is_string($value)){
                             $array[$key] = $value;    
                         }
                     }
-                    if(isset($product['Product']['AttributeSets']['ItemAttributes']['SmallImage'])){
-                        $image = $product['Product']['AttributeSets']['ItemAttributes']['SmallImage']['URL'];
+                    if(isset($product['Products']['Product']['AttributeSets']['ItemAttributes']['SmallImage'])){
+                        $image = $product['Products']['Product']['AttributeSets']['ItemAttributes']['SmallImage']['URL'];
                         $array['medium_image'] = $image;
                         $array['small_image'] = str_replace('._SL75_', '._SL50_', $image);
                         $array['large_image'] = str_replace('._SL75_', '', $image);;
@@ -233,10 +225,6 @@ class MWSClient{
             'not_found' => $not_found
         ];
     
-    }
-    
-    private function calculateImageUrlsFromImage($smallImage, $size){
-        
     }
     
     public function GetReportList()
