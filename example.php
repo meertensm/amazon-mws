@@ -4,7 +4,7 @@
     
     try{
 
-        $client = new \MCS\MWSClient([
+        $client = new MCS\MWSClient([
             'Marketplace_Id' => '',
             'Seller_Id' => '',
             'Access_Key_ID' => '',
