@@ -78,6 +78,12 @@ class MWSClient{
             'action' => 'GetCompetitivePricingForASIN',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
+        ],
+        'GetLowestOfferListingsForASIN' => [
+            'method' => 'POST',
+            'action' => 'GetLowestOfferListingsForASIN',
+            'path' => '/Products/2011-10-01',
+            'date' => '2011-10-01'
         ]
     ];
     
@@ -138,6 +144,51 @@ class MWSClient{
         $array = [];
         foreach ($response as $product) {
             $array[$product['Product']['Identifiers']['MarketplaceASIN']['ASIN']] = $product['Product']['CompetitivePricing']['CompetitivePrices']['CompetitivePrice']['Price'];
+        }
+        return $array;
+        
+    }
+    
+    /**
+     * GetLowestOfferListingsForASIN
+     * @param  array [$asin_array = []] array of ASIN values
+     * @param  array [$ItemCondition = null] New, Used, Collectible, Refurbished, Club, default: All
+     * @return array 
+     */
+    public function GetLowestOfferListingsForASIN($asin_array = [], $ItemCondition = null)
+    {
+        if (count($asin_array) > 20) {
+            throw new Exception('Maximum amount of ASIN\'s for this call is 20');    
+        }
+        
+        $counter = 1;
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id']
+        ];
+        
+        if (!is_null($ItemCondition)) {
+            $query['ItemCondition'] = $ItemCondition;
+        }
+        
+        foreach($asin_array as $key){
+            $query['ASINList.ASIN.' . $counter] = $key; 
+            $counter++;
+        }
+        
+        $response = $this->request($this->endPoints['GetLowestOfferListingsForASIN'], $query);
+        
+        if (isset($response['GetLowestOfferListingsForASINResult'])) {
+            $response = $response['GetLowestOfferListingsForASINResult'];
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                $response = [$response];
+            }
+        } else {
+            return [];    
+        }
+        
+        $array = [];
+        foreach ($response as $product) {
+            $array[$product['Product']['Identifiers']['MarketplaceASIN']['ASIN']] = $product['Product']['LowestOfferListings']['LowestOfferListing'];
         }
         return $array;
         
