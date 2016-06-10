@@ -72,6 +72,12 @@ class MWSClient{
             'action' => 'GetMatchingProductForId',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
+        ],
+        'GetCompetitivePricingForASIN' => [
+            'method' => 'POST',
+            'action' => 'GetCompetitivePricingForASIN',
+            'path' => '/Products/2011-10-01',
+            'date' => '2011-10-01'
         ]
     ];
     
@@ -100,6 +106,41 @@ class MWSClient{
     private function xmlToArray($xmlstring)
     {
         return json_decode(json_encode(simplexml_load_string($xmlstring)), true);
+    }
+    
+    public function GetCompetitivePricingForASIN($asin_array = [])
+    {
+        if (count($asin_array) > 20) {
+            throw new Exception('Maximum amount of ASIN\'s for this call is 20');    
+        }
+        
+        $counter = 1;
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id']
+        ];
+        
+        foreach($asin_array as $key){
+            $query['ASINList.ASIN.' . $counter] = $key; 
+            $counter++;
+        }
+        
+        $response = $this->request($this->endPoints['GetCompetitivePricingForASIN'], $query);
+        
+        if (isset($response['GetCompetitivePricingForASINResult'])) {
+            $response = $response['GetCompetitivePricingForASINResult'];
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                $response = [$response];
+            }
+        } else {
+            return [];    
+        }
+        
+        $array = [];
+        foreach ($response as $product) {
+            $array[$product['Product']['Identifiers']['MarketplaceASIN']['ASIN']] = $product['Product']['CompetitivePricing']['CompetitivePrices']['CompetitivePrice']['Price'];
+        }
+        return $array;
+        
     }
     
     public function listOrders(DateTime $from)
@@ -147,6 +188,7 @@ class MWSClient{
         
         $counter = 1;
         $array = [
+            'MarketplaceId' => $this->config['Marketplace_Id'],
             'IdType' => $type
         ];
         
@@ -154,8 +196,6 @@ class MWSClient{
             $array['IdList.Id.' . $counter] = $key; 
             $counter++;
         }
-        
-        $array['MarketplaceId'] = $this->config['Marketplace_Id'];
         
         $response = $this->request($this->endPoints['GetMatchingProductForId'], $array, null, true); 
         
