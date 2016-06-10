@@ -84,6 +84,12 @@ class MWSClient{
             'action' => 'GetLowestOfferListingsForASIN',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
+        ],
+        'GetLowestPricedOffersForASIN' => [
+            'method' => 'POST',
+            'action' => 'GetLowestPricedOffersForASIN',
+            'path' => '/Products/2011-10-01',
+            'date' => '2011-10-01'
         ]
     ];
     
@@ -146,6 +152,19 @@ class MWSClient{
             $array[$product['Product']['Identifiers']['MarketplaceASIN']['ASIN']] = $product['Product']['CompetitivePricing']['CompetitivePrices']['CompetitivePrice']['Price'];
         }
         return $array;
+        
+    }
+    
+    public function GetLowestPricedOffersForASIN($asin, $ItemCondition = 'New')
+    {
+        
+        $query = [
+            'ASIN' => $asin,
+            'MarketplaceId' => $this->config['Marketplace_Id'],
+            'ItemCondition' => $ItemCondition
+        ];
+        
+        return $this->request($this->endPoints['GetLowestPricedOffersForASIN'], $query);
         
     }
     
