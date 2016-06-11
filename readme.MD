@@ -38,6 +38,7 @@ print_r($result);
 ```
 ### Reports
 For all report types, visit:  [http://docs.developer.amazonservices.com](http://docs.developer.amazonservices.com/en_US/reports/Reports_ReportType.html#ReportTypeCategories__ListingsReports)
+
 ```php
 $reportId = $client->RequestReport('_GET_MERCHANT_LISTINGS_DATA_');
 // Wait a couple of minutes and get it's content
