@@ -1,8 +1,10 @@
-<?php namespace MCS;
+<?php 
+namespace MCS;
 
 use DateTime;
 use Exception;
 use DateTimeZone;
+use League\Csv\Reader;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Spatie\ArrayToXml\ArrayToXml;
@@ -40,6 +42,24 @@ class MWSClient{
         'GetReportList' => [
             'method' => 'POST',
             'action' => 'GetReportList',
+            'path' => '/',
+            'date' => '2009-01-01'
+        ],
+        'GetReportRequestList' => [
+            'method' => 'POST',
+            'action' => 'GetReportRequestList',
+            'path' => '/',
+            'date' => '2009-01-01'
+        ],
+        'GetReport' => [
+            'method' => 'POST',
+            'action' => 'GetReport',
+            'path' => '/',
+            'date' => '2009-01-01'
+        ],
+        'RequestReport' => [
+            'method' => 'POST',
+            'action' => 'RequestReport',
             'path' => '/',
             'date' => '2009-01-01'
         ],
@@ -380,6 +400,80 @@ class MWSClient{
         
     }
     
+    public function RequestReport($report, $StartDate = null, $EndDate = null)
+    {
+        $query = [
+            'ReportType' => $report
+        ];
+        
+        if (!is_null($StartDate)) {
+            if (!is_a($StartDate, 'DateTime')) {
+                throw new Exception('StartDate should be a DateTime object');       
+            } else {
+                $query['StartDate'] = gmdate(self::DATE_FORMAT, $StartDate->getTimestamp());
+            }
+        }
+        
+        if (!is_null($EndDate)) {
+            if (!is_a($EndDate, 'DateTime')) {
+                throw new Exception('EndDate should be a DateTime object');       
+            } else {
+                $query['EndDate'] = gmdate(self::DATE_FORMAT, $EndDate->getTimestamp());
+            }
+        }
+    
+        $result = $this->request($this->endPoints['RequestReport'], $query);
+        
+        if (isset($result['RequestReportResult']['ReportRequestInfo']['ReportRequestId'])) {
+            return $result['RequestReportResult']['ReportRequestInfo']['ReportRequestId'];
+        } else {
+            throw new Exception('Error trying to request report');    
+        }
+    }
+    
+    public function GetReport($ReportId)
+    {
+        $status = $this->GetReportRequestStatus($ReportId);
+        
+        if ($status !== false && $status['ReportProcessingStatus'] === '_DONE_NO_DATA_') {
+            return [];
+        } else if ($status !== false && $status['ReportProcessingStatus'] === '_DONE_') {
+            
+            $result = $this->request($this->endPoints['GetReport'], [
+                'ReportId' => $status['GeneratedReportId']
+            ]);
+            
+            if (is_string($result)) {
+                $csv = Reader::createFromString($result);
+                $csv->setDelimiter("\t");
+                $headers = $csv->fetchOne();
+                $result = [];
+                foreach ($csv->setOffset(1)->fetchAll() as $row) {
+                    $result[] = array_combine($headers, $row);    
+                }
+            }
+            
+            return $result;
+            
+        } else {
+            return false;    
+        }
+    }
+    
+    public function GetReportRequestStatus($ReportId)
+    {
+        $result = $this->request($this->endPoints['GetReportRequestList'], [
+            'ReportRequestIdList.Id.1' => $ReportId    
+        ]);
+          
+        if (isset($result['GetReportRequestListResult']['ReportRequestInfo'])) {
+            return $result['GetReportRequestListResult']['ReportRequestInfo'];
+        } 
+        
+        return false;
+        
+    }
+    
     private function request($endPoint, array $query = [], $body = null, $raw = false)
     {
     
@@ -453,14 +547,17 @@ class MWSClient{
             if ($raw) {
                 return $body;    
             }
-            
-            return $this->xmlToArray($body);
+        
+            if (strpos(strtolower($response->getHeader('Content-Type')[0]), 'xml') !== false) {
+                return $this->xmlToArray($body);          
+            } else {
+                return $body;
+            }
            
         } catch(BadResponseException $e) {
             if ($e->hasResponse()) {
                 $message = $e->getResponse();
                 $message = $message->getBody();
-                //$message .= $message->getStatusCode() . ' - ' . $message->getReasonPhrase();
             } else {
                 $message = 'An error occured';    
             }

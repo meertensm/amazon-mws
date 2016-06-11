@@ -25,6 +25,13 @@
 
         print_r($result);
         
+        // Get a report
+        $reportId = $client->RequestReport('_GET_MERCHANT_LISTINGS_DATA_');
+        // Wait a couple of minutes
+        $report_content = $client->GetReport($reportId);
+        
+        print_r($report_content);
+        
     }
     catch(Exception $e){
         echo $e->getMessage();    

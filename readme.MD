@@ -20,7 +20,6 @@ $client = new MCS\MWSClient([
 // Get orders
 $fromDate = new DateTime('2016-01-01');
 $orders = $client->ListOrders($fromDate);
-
 print_r($orders);
 
 // Update stock
@@ -28,6 +27,11 @@ $result = $client->updateStock([
     'sku1' => 20,
     'sku2' => 9,
 ]);
-
 print_r($result);
+
+// Get a report
+$reportId = $client->RequestReport('_GET_MERCHANT_LISTINGS_DATA_');
+// Wait a couple of minutes
+$report_content = $client->GetReport($reportId);
+print_r($report_content);
 ```
