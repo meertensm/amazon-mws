@@ -207,7 +207,11 @@ class MWSClient{
         
         $array = [];
         foreach ($response as $product) {
-            $array[$product['Product']['Identifiers']['MarketplaceASIN']['ASIN']] = $product['Product']['LowestOfferListings']['LowestOfferListing'];
+            if (isset($product['Product']['LowestOfferListings']['LowestOfferListing'])) {
+                $array[$product['Product']['Identifiers']['MarketplaceASIN']['ASIN']] = $product['Product']['LowestOfferListings']['LowestOfferListing'];
+            } else {
+                $array[$product['Product']['Identifiers']['MarketplaceASIN']['ASIN']] = false;
+            }
         }
         return $array;
         
@@ -224,7 +228,7 @@ class MWSClient{
         
         $response = $this->request($this->endPoints['ListOrders'], $query);
         
-        if( isset($response['ListOrdersResult']['Orders']['Order'])) {
+        if (isset($response['ListOrdersResult']['Orders']['Order'])) {
             $response = $response['ListOrdersResult']['Orders']['Order'];
             if (array_keys($response) !== range(0, count($response) - 1)) {
                 return [$response];
@@ -243,7 +247,7 @@ class MWSClient{
         
         if (isset($response['GetOrderResult']['Orders']['Order'])) {
             return $response['GetOrderResult']['Orders']['Order'];
-        }else {
+        } else {
             return false;    
         }
     }
