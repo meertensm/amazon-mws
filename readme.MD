@@ -36,6 +36,14 @@ $result = $client->updateStock([
 ]);
 print_r($result);
 ```
+### Product pricing
+```php
+$result = $client->updatePrice([
+    'sku1' => '20.99',
+    'sku2' => '100.00',
+]);
+print_r($result);
+```
 ### Reports
 For all report types, visit:  [http://docs.developer.amazonservices.com](http://docs.developer.amazonservices.com/en_US/reports/Reports_ReportType.html#ReportTypeCategories__ListingsReports)
 
