@@ -39,6 +39,12 @@ class MWSClient{
     ];
     
     private $endPoints = [
+        'GetFeedSubmissionResult' => [
+            'method' => 'POST',
+            'action' => 'GetFeedSubmissionResult',
+            'path' => '/',
+            'date' => '2009-01-01'
+        ],
         'GetReportList' => [
             'method' => 'POST',
             'action' => 'GetReportList',
@@ -135,11 +141,11 @@ class MWSClient{
         
     }
     
-    private function xmlToArray($xmlstring)
-    {
-        return json_decode(json_encode(simplexml_load_string($xmlstring)), true);
-    }
-    
+    /**
+     * Returns the current competitive price of a product, based on ASIN.
+     * @param  array [$asin_array = []]
+     * @return array
+     */
     public function GetCompetitivePricingForASIN($asin_array = [])
     {
         if (count($asin_array) > 20) {
@@ -177,6 +183,12 @@ class MWSClient{
         
     }
     
+    /**
+     * Returns lowest priced offers for a single product, based on ASIN.
+     * @param  string $asin                    
+     * @param  string [$ItemCondition = 'New'] Should be one in: New, Used, Collectible, Refurbished, Club
+     * @return array  
+     */
     public function GetLowestPricedOffersForASIN($asin, $ItemCondition = 'New')
     {
         
@@ -191,9 +203,9 @@ class MWSClient{
     }
     
     /**
-     * GetLowestOfferListingsForASIN
+     * Returns pricing information for the lowest-price active offer listings for up to 20 products, based on ASIN.
      * @param  array [$asin_array = []] array of ASIN values
-     * @param  array [$ItemCondition = null] New, Used, Collectible, Refurbished, Club, default: All
+     * @param  array [$ItemCondition = null] Should be one in: New, Used, Collectible, Refurbished, Club. Default: All
      * @return array 
      */
     public function GetLowestOfferListingsForASIN($asin_array = [], $ItemCondition = null)
@@ -239,7 +251,12 @@ class MWSClient{
         
     }
     
-    public function listOrders(DateTime $from)
+    /**
+     * Returns orders created or updated during a time frame that you specify.
+     * @param  object DateTime $from 
+     * @return array
+     */
+    public function ListOrders(DateTime $from)
     {
         $query = [
             'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp()),
@@ -261,10 +278,15 @@ class MWSClient{
         }   
     }
     
-    public function GetOrder($id)
+    /**
+     * Returns an order based on the AmazonOrderId values that you specify.
+     * @param string $AmazonOrderId
+     * @return array if the order is found, false if not
+     */
+    public function GetOrder($AmazonOrderId)
     { 
         $response = $this->request($this->endPoints['GetOrder'], [
-            'AmazonOrderId.Id.1' => $id
+            'AmazonOrderId.Id.1' => $AmazonOrderId
         ]); 
         
         if (isset($response['GetOrderResult']['Orders']['Order'])) {
@@ -274,11 +296,31 @@ class MWSClient{
         }
     }
     
-    public function GetMatchingProductForId(array $asin_array, $type = 'ASIN')
-    { 
-        $asin_array = array_unique($asin_array);
+    /**
+     * Returns order items based on the AmazonOrderId that you specify.
+     * @param  string $AmazonOrderId
+     * @return array  
+     */
+    public function ListOrderItems($AmazonOrderId)
+    {
+        $response = $this->request($this->endPoints['ListOrderItems'], [
+            'AmazonOrderId' => $AmazonOrderId
+        ]);
         
-        if(count($asin_array) > 5) {
+        return array_values($response['ListOrderItemsResult']['OrderItems']);   
+    }
+    
+    /**
+     * Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
+     * @param array  $list A list of id's
+     * @param  string [$type = 'ASIN']  the identifier name
+     * @return array
+     */
+    public function GetMatchingProductForId(array $list, $type = 'ASIN')
+    { 
+        $list = array_unique($list);
+        
+        if(count($list) > 5) {
             throw new Exception('Maximum number of id\'s = 5');    
         }
         
@@ -288,7 +330,7 @@ class MWSClient{
             'IdType' => $type
         ];
         
-        foreach($asin_array as $key){
+        foreach($list as $key){
             $array['IdList.Id.' . $counter] = $key; 
             $counter++;
         }
@@ -354,33 +396,29 @@ class MWSClient{
     
     }
     
+    /**
+     * Returns a list of reports that were created in the previous 90 days.
+     * @return array
+     */
     public function GetReportList()
     {
         return $this->request($this->endPoints['GetReportList']);   
     }
     
-    public function ListOrderItems($id)
-    {
-        $response = $this->request($this->endPoints['ListOrderItems'], [
-            'AmazonOrderId' => $id
-        ]);
-        
-        return array_values($response['ListOrderItemsResult']['OrderItems']);   
-    }
-    
+    /**
+     * Update a product's stock quantity
+     * @param array $array array containing sku as key and quantity as value
+     * @return array feed submission result
+     */
     public function updateStock(array $array)
     {   
-        $message = [
-            'Header' => [
-                'DocumentVersion' => 1.01,
-                'MerchantIdentifier' => $this->config['Seller_Id']
-            ],
+        $feed = [
             'MessageType' => 'Inventory',
             'Message' => []
         ];
         
         foreach ($array as $sku => $quantity) {
-            $message['Message'][] = [
+            $feed['Message'][] = [
                 'MessageID' => rand(),
                 'OperationType' => 'Update',
                 'Inventory' => [
@@ -390,18 +428,126 @@ class MWSClient{
             ];  
         }
         
-        $response = $this->request($this->endPoints['SubmitFeed'], [
-            'FeedType' => '_POST_INVENTORY_AVAILABILITY_DATA_',
+        return $this->SubmitFeed('_POST_INVENTORY_AVAILABILITY_DATA_', $feed);
+        
+    }
+    
+    /**
+     * Update a product's price
+     * @param array $array array containing sku as key and price as value
+     * Price has to be formatted as XSD Numeric Data Type (http://www.w3schools.com/xml/schema_dtypes_numeric.asp)
+     * @return array feed submission result
+     */
+    public function updatePrice(array $array)
+    {   
+        
+        $feed = [
+            'MessageType' => 'Price',
+            'Message' => []
+        ];
+        
+        foreach ($array as $sku => $price) {
+            $feed['Message'][] = [
+                'MessageID' => rand(),
+                'Price' => [
+                    'SKU' => $sku,
+                    'StandardPrice' => [
+                        '_value' => $price,
+                        '_attributes' => [
+                            'currency' => 'DEFAULT'
+                        ]
+                    ]
+                ]
+            ];  
+        }
+        
+        return $this->SubmitFeed('_POST_PRODUCT_PRICING_DATA_', $feed);
+        
+    }
+    
+    /**
+     * Get a feed's submission status
+     * @param  string   $FeedSubmissionId
+     * @return array
+     */
+    public function GetFeedSubmissionResult($FeedSubmissionId)
+    {
+        $result = $this->request($this->endPoints['GetFeedSubmissionResult'], [
+            'FeedSubmissionId' => $FeedSubmissionId
+        ]); 
+        
+        if (isset($result['Message']['ProcessingReport'])) {
+            return $result['Message']['ProcessingReport'];    
+        } else {
+            return $result;    
+        }
+    }
+    
+    /**
+     * Submit a feed to MWS. 
+     * @param  string   $FeedType    (http://docs.developer.amazonservices.com/en_US/feeds/Feeds_FeedType.html)
+     * @param  mixed    $feedContent Array will be converted to xml using https://github.com/spatie/array-to-xml. Strings will not be modified.
+     * @return array
+     */
+    public function SubmitFeed($FeedType, $feedContent)
+    {
+        
+        if (is_array($feedContent)) {
+            $feedContent = $this->arrayToXml(
+                array_merge([
+                    'Header' => [
+                        'DocumentVersion' => 1.01,
+                        'MerchantIdentifier' => $this->config['Seller_Id']
+                    ]
+                ], $feedContent)
+            );
+        }
+        
+        $query = [
+            'FeedType' => $FeedType,
             'PurgeAndReplace' => 'false',
             'Merchant' => $this->config['Seller_Id'],
             'MarketplaceId.Id.1' => false,
             'SellerId' => false,
-        ], ArrayToXml::convert($message, 'AmazonEnvelope'));
-
-        return $response['SubmitFeedResult']['FeedSubmissionInfo'];
+        ];
         
+        if ($FeedType === '_POST_PRODUCT_PRICING_DATA_') {
+            $query['MarketplaceIdList.Id.1'] = $this->config['Marketplace_Id'];        
+        }
+        
+        $response = $this->request($this->endPoints['SubmitFeed'], $query, $feedContent);
+        
+        return $response['SubmitFeedResult']['FeedSubmissionInfo'];
     }
     
+    /**
+     * Convert an array to xml
+     * @param  $array array to convert
+     * @param  $customRoot [$customRoot = 'AmazonEnvelope']
+     * @return sting
+     */
+    private function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
+    {
+        return ArrayToXml::convert($array, $customRoot);
+    }
+    
+    /**
+     * Convert an xml string to an array
+     * @param  string $xmlstring 
+     * @return array
+     */
+    private function xmlToArray($xmlstring)
+    {
+        return json_decode(json_encode(simplexml_load_string($xmlstring)), true);
+    }
+    
+    /**
+     * Request a report
+     * @param  string   $report (http://docs.developer.amazonservices.com/en_US/reports/Reports_ReportType.html)
+     * @param  DateTime [$StartDate = null]
+     * @param  EndDate  [$EndDate = null]
+     * @return string   ReportRequestId
+     */
     public function RequestReport($report, $StartDate = null, $EndDate = null)
     {
         $query = [
@@ -433,6 +579,11 @@ class MWSClient{
         }
     }
     
+    /**
+     * Get a report's contents
+     * @param  string $ReportId
+     * @return array on succes
+     */
     public function GetReport($ReportId)
     {
         $status = $this->GetReportRequestStatus($ReportId);
@@ -462,6 +613,11 @@ class MWSClient{
         }
     }
     
+    /**
+     * Get a report's processing status
+     * @param  string  $ReportId
+     * @return array if the report is found
+     */
     public function GetReportRequestStatus($ReportId)
     {
         $result = $this->request($this->endPoints['GetReportRequestList'], [
@@ -476,6 +632,9 @@ class MWSClient{
         
     }
     
+    /**
+     * Request MWS
+     */
     private function request($endPoint, array $query = [], $body = null, $raw = false)
     {
     
@@ -548,9 +707,7 @@ class MWSClient{
             
             if ($raw) {
                 return $body;    
-            }
-        
-            if (strpos(strtolower($response->getHeader('Content-Type')[0]), 'xml') !== false) {
+            } else if (strpos(strtolower($response->getHeader('Content-Type')[0]), 'xml') !== false) {
                 return $this->xmlToArray($body);          
             } else {
                 return $body;
@@ -560,6 +717,10 @@ class MWSClient{
             if ($e->hasResponse()) {
                 $message = $e->getResponse();
                 $message = $message->getBody();
+                if (strpos($message, '<ErrorResponse') !== false) {
+                    $error = simplexml_load_string($message);
+                    $message = $error->Error->Message;
+                }
             } else {
                 $message = 'An error occured';    
             }
