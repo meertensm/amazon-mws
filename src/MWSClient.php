@@ -143,7 +143,7 @@ class MWSClient{
     
     /**
      * Returns the current competitive price of a product, based on ASIN.
-     * @param  array [$asin_array = []]
+     * @param array [$asin_array = []]
      * @return array
      */
     public function GetCompetitivePricingForASIN($asin_array = [])
@@ -185,8 +185,8 @@ class MWSClient{
     
     /**
      * Returns lowest priced offers for a single product, based on ASIN.
-     * @param  string $asin                    
-     * @param  string [$ItemCondition = 'New'] Should be one in: New, Used, Collectible, Refurbished, Club
+     * @param string $asin                    
+     * @param string [$ItemCondition = 'New'] Should be one in: New, Used, Collectible, Refurbished, Club
      * @return array  
      */
     public function GetLowestPricedOffersForASIN($asin, $ItemCondition = 'New')
@@ -204,8 +204,8 @@ class MWSClient{
     
     /**
      * Returns pricing information for the lowest-price active offer listings for up to 20 products, based on ASIN.
-     * @param  array [$asin_array = []] array of ASIN values
-     * @param  array [$ItemCondition = null] Should be one in: New, Used, Collectible, Refurbished, Club. Default: All
+     * @param array [$asin_array = []] array of ASIN values
+     * @param array [$ItemCondition = null] Should be one in: New, Used, Collectible, Refurbished, Club. Default: All
      * @return array 
      */
     public function GetLowestOfferListingsForASIN($asin_array = [], $ItemCondition = null)
@@ -253,7 +253,7 @@ class MWSClient{
     
     /**
      * Returns orders created or updated during a time frame that you specify.
-     * @param  object DateTime $from 
+     * @param object DateTime $from 
      * @return array
      */
     public function ListOrders(DateTime $from)
@@ -298,7 +298,7 @@ class MWSClient{
     
     /**
      * Returns order items based on the AmazonOrderId that you specify.
-     * @param  string $AmazonOrderId
+     * @param string $AmazonOrderId
      * @return array  
      */
     public function ListOrderItems($AmazonOrderId)
@@ -313,7 +313,7 @@ class MWSClient{
     /**
      * Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
      * @param array  $list A list of id's
-     * @param  string [$type = 'ASIN']  the identifier name
+     * @param string [$type = 'ASIN']  the identifier name
      * @return array
      */
     public function GetMatchingProductForId(array $list, $type = 'ASIN')
@@ -434,7 +434,7 @@ class MWSClient{
     
     /**
      * Update a product's price
-     * @param array $array array containing sku as key and price as value
+     * @param array $array an array containing sku as key and price as value
      * Price has to be formatted as XSD Numeric Data Type (http://www.w3schools.com/xml/schema_dtypes_numeric.asp)
      * @return array feed submission result
      */
@@ -467,7 +467,7 @@ class MWSClient{
     
     /**
      * Get a feed's submission status
-     * @param  string   $FeedSubmissionId
+     * @param string $FeedSubmissionId
      * @return array
      */
     public function GetFeedSubmissionResult($FeedSubmissionId)
@@ -485,11 +485,12 @@ class MWSClient{
     
     /**
      * Submit a feed to MWS. 
-     * @param  string   $FeedType    (http://docs.developer.amazonservices.com/en_US/feeds/Feeds_FeedType.html)
-     * @param  mixed    $feedContent Array will be converted to xml using https://github.com/spatie/array-to-xml. Strings will not be modified.
+     * @param string  $FeedType (http://docs.developer.amazonservices.com/en_US/feeds/Feeds_FeedType.html)
+     * @param mixed   $feedContent Array will be converted to xml using https://github.com/spatie/array-to-xml. Strings will not be modified.
+     * @param boolean $debug Return the generated xml and don't send it to amazon
      * @return array
      */
-    public function SubmitFeed($FeedType, $feedContent)
+    public function SubmitFeed($FeedType, $feedContent, $debug = false)
     {
         
         if (is_array($feedContent)) {
@@ -501,6 +502,10 @@ class MWSClient{
                     ]
                 ], $feedContent)
             );
+        }
+        
+        if ($debug === true) {
+            return $feedContent;    
         }
         
         $query = [
@@ -522,8 +527,8 @@ class MWSClient{
     
     /**
      * Convert an array to xml
-     * @param  $array array to convert
-     * @param  $customRoot [$customRoot = 'AmazonEnvelope']
+     * @param $array array to convert
+     * @param $customRoot [$customRoot = 'AmazonEnvelope']
      * @return sting
      */
     private function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
@@ -533,7 +538,7 @@ class MWSClient{
     
     /**
      * Convert an xml string to an array
-     * @param  string $xmlstring 
+     * @param string $xmlstring 
      * @return array
      */
     private function xmlToArray($xmlstring)
@@ -543,10 +548,10 @@ class MWSClient{
     
     /**
      * Request a report
-     * @param  string   $report (http://docs.developer.amazonservices.com/en_US/reports/Reports_ReportType.html)
-     * @param  DateTime [$StartDate = null]
-     * @param  EndDate  [$EndDate = null]
-     * @return string   ReportRequestId
+     * @param string $report (http://docs.developer.amazonservices.com/en_US/reports/Reports_ReportType.html)
+     * @param DateTime [$StartDate = null]
+     * @param EndDate [$EndDate = null]
+     * @return string ReportRequestId
      */
     public function RequestReport($report, $StartDate = null, $EndDate = null)
     {
@@ -581,7 +586,7 @@ class MWSClient{
     
     /**
      * Get a report's contents
-     * @param  string $ReportId
+     * @param string $ReportId
      * @return array on succes
      */
     public function GetReport($ReportId)
@@ -615,7 +620,7 @@ class MWSClient{
     
     /**
      * Get a report's processing status
-     * @param  string  $ReportId
+     * @param string  $ReportId
      * @return array if the report is found
      */
     public function GetReportRequestStatus($ReportId)
