@@ -18,7 +18,7 @@ $client = new MCS\MWSClient([
     'Secret_Access_Key' => '',
 ]);
 ```
-### Orders
+### Get orders
 ```php
 $fromDate = new DateTime('2016-01-01');
 $orders = $client->ListOrders($fromDate);
@@ -28,7 +28,17 @@ foreach ($orders as $order) {
     print_r($items);
 }
 ```
-### Stock
+### Get product attributes
+```php
+$searchField = 'ASIN'; // Can be GCID, SellerSKU, UPC, EAN, ISBN, or JAN
+
+$result = $client->GetMatchingProductForId([
+    '<ASIN1>', '<ASIN2>', '<ASIN3>'
+], $searchField);
+
+print_r($result);
+```
+### Update product stock
 ```php
 $result = $client->updateStock([
     'sku1' => 20,
@@ -39,7 +49,7 @@ print_r($result);
 $info = $client->GetFeedSubmissionResult($result['FeedSubmissionId']);
 print_r($info);
 ```
-### Product pricing
+### Update product pricing
 ```php
 $result = $client->updatePrice([
     'sku1' => '20.99',
