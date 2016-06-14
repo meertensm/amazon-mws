@@ -6,6 +6,12 @@ use Exception;
 class MWSEndPoint{
     
     public static $endpoints = [
+        'ListMarketplaceParticipations' => [
+            'method' => 'POST',
+            'action' => 'ListMarketplaceParticipations',
+            'path' => '/Sellers/2011-07-01',
+            'date' => '2011-07-01'
+        ],
         'GetMyPriceForSKU' => [
             'method' => 'POST',
             'action' => 'GetMyPriceForSKU',

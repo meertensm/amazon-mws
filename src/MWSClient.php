@@ -502,6 +502,20 @@ class MWSClient{
     }
     
     /**
+     * Returns a list of marketplaces that the seller submitting the request can sell in, and a list of participations that include seller-specific information in that marketplace
+     * @return array
+     */
+    public function ListMarketplaceParticipations()
+    {
+        $result = $this->request('ListMarketplaceParticipations');   
+        if (isset($result['ListMarketplaceParticipationsResult'])) {
+            return $result['ListMarketplaceParticipationsResult'];    
+        } else {
+            return $result;
+        }
+    }
+    
+    /**
      * Update a product's stock quantity
      * @param array $array array containing sku as key and quantity as value
      * @return array feed submission result
