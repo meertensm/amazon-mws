@@ -100,7 +100,7 @@ class MWSClient{
         }
         
         $response = $this->request(
-            EndPoint::get('GetCompetitivePricingForASIN'),
+            'GetCompetitivePricingForASIN',
             $query
         );
         
@@ -139,7 +139,7 @@ class MWSClient{
         ];
         
         return $this->request(
-            EndPoint::get('GetLowestPricedOffersForASIN'),
+            'GetLowestPricedOffersForASIN',
             $query
         );
         
@@ -172,7 +172,7 @@ class MWSClient{
         }
         
         $response = $this->request(
-            EndPoint::get('GetLowestOfferListingsForASIN'),
+            'GetLowestOfferListingsForASIN',
             $query
         );
         
@@ -212,7 +212,7 @@ class MWSClient{
         ];
         
         $response = $this->request(
-            EndPoint::get('ListOrders'),
+            'ListOrders',
             $query
         );
         
@@ -234,7 +234,7 @@ class MWSClient{
      */
     public function GetOrder($AmazonOrderId)
     { 
-        $response = $this->request(EndPoint::get('GetOrder'), [
+        $response = $this->request('GetOrder', [
             'AmazonOrderId.Id.1' => $AmazonOrderId
         ]); 
         
@@ -252,7 +252,7 @@ class MWSClient{
      */
     public function ListOrderItems($AmazonOrderId)
     {
-        $response = $this->request(EndPoint::get('ListOrderItems'), [
+        $response = $this->request('ListOrderItems', [
             'AmazonOrderId' => $AmazonOrderId
         ]);
         
@@ -266,7 +266,7 @@ class MWSClient{
      */
     public function GetProductCategoriesForSKU($SellerSKU)
     {
-        $result = $this->request(EndPoint::get('GetProductCategoriesForSKU'), [
+        $result = $this->request('GetProductCategoriesForSKU', [
             'MarketplaceId' => $this->config['Marketplace_Id'],
             'SellerSKU' => $SellerSKU
         ]);
@@ -285,7 +285,7 @@ class MWSClient{
      */
     public function GetProductCategoriesForASIN($ASIN)
     {
-        $result = $this->request(EndPoint::get('GetProductCategoriesForASIN'), [
+        $result = $this->request('GetProductCategoriesForASIN', [
             'MarketplaceId' => $this->config['Marketplace_Id'],
             'ASIN' => $ASIN
         ]);
@@ -323,7 +323,7 @@ class MWSClient{
         }
         
         $response = $this->request(
-            EndPoint::get('GetMatchingProductForId'),
+            'GetMatchingProductForId',
             $array,
             null,
             true
@@ -394,7 +394,7 @@ class MWSClient{
      */
     public function GetReportList()
     {
-        return $this->request(EndPoint::get('GetReportList'));   
+        return $this->request('GetReportList');   
     }
     
     /**
@@ -464,7 +464,7 @@ class MWSClient{
      */
     public function GetFeedSubmissionResult($FeedSubmissionId)
     {
-        $result = $this->request(EndPoint::get('GetFeedSubmissionResult'), [
+        $result = $this->request('GetFeedSubmissionResult', [
             'FeedSubmissionId' => $FeedSubmissionId
         ]); 
         
@@ -477,8 +477,8 @@ class MWSClient{
     
     /**
      * Submit a feed to MWS. 
-     * @param string  $FeedType (http://docs.developer.amazonservices.com/en_US/feeds/Feeds_FeedType.html)
-     * @param mixed   $feedContent Array will be converted to xml using https://github.com/spatie/array-to-xml. Strings will not be modified.
+     * @param string $FeedType (http://docs.developer.amazonservices.com/en_US/feeds/Feeds_FeedType.html)
+     * @param mixed $feedContent Array will be converted to xml using https://github.com/spatie/array-to-xml. Strings will not be modified.
      * @param boolean $debug Return the generated xml and don't send it to amazon
      * @return array
      */
@@ -513,7 +513,7 @@ class MWSClient{
         }
         
         $response = $this->request(
-            EndPoint::get('SubmitFeed'),
+            'SubmitFeed',
             $query,
             $feedContent
         );
@@ -572,7 +572,7 @@ class MWSClient{
         }
     
         $result = $this->request(
-            EndPoint::get('RequestReport'),
+            'RequestReport',
             $query
         );
         
@@ -596,7 +596,7 @@ class MWSClient{
             return [];
         } else if ($status !== false && $status['ReportProcessingStatus'] === '_DONE_') {
             
-            $result = $this->request(EndPoint::get('GetReport'), [
+            $result = $this->request('GetReport', [
                 'ReportId' => $status['GeneratedReportId']
             ]);
             
@@ -624,7 +624,7 @@ class MWSClient{
      */
     public function GetReportRequestStatus($ReportId)
     {
-        $result = $this->request(EndPoint::get('GetReportRequestList'), [
+        $result = $this->request('GetReportRequestList', [
             'ReportRequestIdList.Id.1' => $ReportId    
         ]);
           
@@ -642,6 +642,8 @@ class MWSClient{
     private function request($endPoint, array $query = [], $body = null, $raw = false)
     {
     
+        $endPoint = MWSEndPoint::get($endPoint);
+        
         $query = array_merge([
             'Timestamp' => gmdate(self::DATE_FORMAT, time()),
             'AWSAccessKeyId' => $this->config['Access_Key_ID'],
