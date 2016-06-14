@@ -76,3 +76,25 @@ $reportId = $client->RequestReport('_GET_MERCHANT_LISTINGS_DATA_');
 $report_content = $client->GetReport($reportId);
 print_r($report_content);
 ```
+Methods available at this time:
+- validateCredentials
+- GetCompetitivePricingForASIN
+- GetLowestPricedOffersForASIN
+- GetMyPriceForSKU
+- GetMyPriceForASIN
+- GetLowestOfferListingsForASIN
+- ListOrders
+- GetOrder
+- ListOrderItems
+- GetProductCategoriesForSKU
+- GetProductCategoriesForASIN
+- GetMatchingProductForId
+- GetReportList
+- GetFeedSubmissionResult
+- SubmitFeed
+- RequestReport
+- GetReport
+- GetReportRequestStatus
+- updateStock
+- updatePrice
+- ListMarketplaceParticipations

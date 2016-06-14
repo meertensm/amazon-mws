@@ -4,11 +4,11 @@ namespace MCS;
 use DateTime;
 use Exception;
 use DateTimeZone;
+use MCS\MWSEndPoint;
 use League\Csv\Reader;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Spatie\ArrayToXml\ArrayToXml;
-use MCS\MWSEndPoint as EndPoint;
 
 class MWSClient{
     
@@ -702,7 +702,7 @@ class MWSClient{
     }
     
     /**
-     * Get a report's contents
+     * Get a report's content
      * @param string $ReportId
      * @return array on succes
      */
