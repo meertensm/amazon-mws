@@ -146,6 +146,110 @@ class MWSClient{
     }
     
     /**
+     * Returns pricing information for your own offer listings, based on SKU.
+     * @param array  [$sku_array = []]       
+     * @param string [$ItemCondition = null] 
+     * @return array  
+     */
+    public function GetMyPriceForSKU($sku_array = [], $ItemCondition = null)
+    {
+        if (count($sku_array) > 20) {
+            throw new Exception('Maximum amount of SKU\'s for this call is 20');    
+        }
+        
+        $counter = 1;
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id']
+        ];
+        
+        if (!is_null($ItemCondition)) {
+            $query['ItemCondition'] = $ItemCondition;
+        }
+        
+        foreach($sku_array as $key){
+            $query['SellerSKUList.SellerSKU.' . $counter] = $key; 
+            $counter++;
+        }
+        
+        $response = $this->request(
+            'GetMyPriceForSKU',
+            $query
+        );
+        
+        if (isset($response['GetMyPriceForSKUResult'])) {
+            $response = $response['GetMyPriceForSKUResult'];
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                $response = [$response];
+            }
+        } else {
+            return [];    
+        }
+        
+        $array = [];
+        foreach ($response as $product) {
+            if (isset($product['@attributes']['status']) && $product['@attributes']['status'] == 'Success') {
+                $array[$product['@attributes']['SellerSKU']] = $product['Product']['Offers']['Offer'];
+            } else {
+                $array[$product['@attributes']['SellerSKU']] = false;
+            }
+        }
+        return $array;
+        
+    }
+    
+    /**
+     * Returns pricing information for your own offer listings, based on ASIN.
+     * @param array [$asin_array = []]
+     * @param string [$ItemCondition = null] 
+     * @return array
+     */
+    public function GetMyPriceForASIN($asin_array = [], $ItemCondition = null)
+    {
+        if (count($asin_array) > 20) {
+            throw new Exception('Maximum amount of SKU\'s for this call is 20');    
+        }
+        
+        $counter = 1;
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id']
+        ];
+        
+        if (!is_null($ItemCondition)) {
+            $query['ItemCondition'] = $ItemCondition;
+        }
+        
+        foreach($asin_array as $key){
+            $query['ASINList.ASIN.' . $counter] = $key; 
+            $counter++;
+        }
+        
+        $response = $this->request(
+            'GetMyPriceForASIN',
+            $query
+        );
+        
+        if (isset($response['GetMyPriceForASINResult'])) {
+            $response = $response['GetMyPriceForASINResult'];
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                $response = [$response];
+            }
+        } else {
+            return [];    
+        }
+        
+        $array = [];
+        foreach ($response as $product) {
+            if (isset($product['@attributes']['status']) && $product['@attributes']['status'] == 'Success') {
+                $array[$product['@attributes']['ASIN']] = $product['Product']['Offers']['Offer'];
+            } else {
+                $array[$product['@attributes']['ASIN']] = false;
+            }
+        }
+        return $array;
+        
+    }
+    
+    /**
      * Returns pricing information for the lowest-price active offer listings for up to 20 products, based on ASIN.
      * @param array [$asin_array = []] array of ASIN values
      * @param array [$ItemCondition = null] Should be one in: New, Used, Collectible, Refurbished, Club. Default: All
