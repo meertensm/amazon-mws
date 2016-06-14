@@ -8,6 +8,7 @@ use League\Csv\Reader;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Spatie\ArrayToXml\ArrayToXml;
+use MCS\MWSEndPoint as EndPoint;
 
 class MWSClient{
     
@@ -36,87 +37,6 @@ class MWSClient{
         'A1F83G8C2ARO7P' => 'mws-eu.amazonservices.com',
         'A1VC38T7YXB528' => 'mws.amazonservices.jp',
         'AAHKV2X7AFYLW'  => 'mws.amazonservices.com.cn',
-    ];
-    
-    private $endPoints = [
-        'GetFeedSubmissionResult' => [
-            'method' => 'POST',
-            'action' => 'GetFeedSubmissionResult',
-            'path' => '/',
-            'date' => '2009-01-01'
-        ],
-        'GetReportList' => [
-            'method' => 'POST',
-            'action' => 'GetReportList',
-            'path' => '/',
-            'date' => '2009-01-01'
-        ],
-        'GetReportRequestList' => [
-            'method' => 'POST',
-            'action' => 'GetReportRequestList',
-            'path' => '/',
-            'date' => '2009-01-01'
-        ],
-        'GetReport' => [
-            'method' => 'POST',
-            'action' => 'GetReport',
-            'path' => '/',
-            'date' => '2009-01-01'
-        ],
-        'RequestReport' => [
-            'method' => 'POST',
-            'action' => 'RequestReport',
-            'path' => '/',
-            'date' => '2009-01-01'
-        ],
-        'ListOrders' => [
-            'method' => 'POST',
-            'action' => 'ListOrders',
-            'path' => '/Orders/2013-09-01',
-            'date' => '2013-09-01'
-        ],
-        'ListOrderItems' => [
-            'method' => 'POST',
-            'action' => 'ListOrderItems',
-            'path' => '/Orders/2013-09-01',
-            'date' => '2013-09-01'
-        ],
-        'GetOrder' => [
-            'method' => 'POST',
-            'action' => 'GetOrder',
-            'path' => '/Orders/2013-09-01',
-            'date' => '2013-09-01'
-        ],
-        'SubmitFeed' => [
-            'method' => 'POST',
-            'action' => 'SubmitFeed',
-            'path' => '/',
-            'date' => '2009-01-01'
-        ],
-        'GetMatchingProductForId' => [
-            'method' => 'POST',
-            'action' => 'GetMatchingProductForId',
-            'path' => '/Products/2011-10-01',
-            'date' => '2011-10-01'
-        ],
-        'GetCompetitivePricingForASIN' => [
-            'method' => 'POST',
-            'action' => 'GetCompetitivePricingForASIN',
-            'path' => '/Products/2011-10-01',
-            'date' => '2011-10-01'
-        ],
-        'GetLowestOfferListingsForASIN' => [
-            'method' => 'POST',
-            'action' => 'GetLowestOfferListingsForASIN',
-            'path' => '/Products/2011-10-01',
-            'date' => '2011-10-01'
-        ],
-        'GetLowestPricedOffersForASIN' => [
-            'method' => 'POST',
-            'action' => 'GetLowestPricedOffersForASIN',
-            'path' => '/Products/2011-10-01',
-            'date' => '2011-10-01'
-        ]
     ];
     
     public function __construct(array $config)
@@ -179,7 +99,10 @@ class MWSClient{
             $counter++;
         }
         
-        $response = $this->request($this->endPoints['GetCompetitivePricingForASIN'], $query);
+        $response = $this->request(
+            EndPoint::get('GetCompetitivePricingForASIN'),
+            $query
+        );
         
         if (isset($response['GetCompetitivePricingForASINResult'])) {
             $response = $response['GetCompetitivePricingForASINResult'];
@@ -215,7 +138,10 @@ class MWSClient{
             'ItemCondition' => $ItemCondition
         ];
         
-        return $this->request($this->endPoints['GetLowestPricedOffersForASIN'], $query);
+        return $this->request(
+            EndPoint::get('GetLowestPricedOffersForASIN'),
+            $query
+        );
         
     }
     
@@ -245,7 +171,10 @@ class MWSClient{
             $counter++;
         }
         
-        $response = $this->request($this->endPoints['GetLowestOfferListingsForASIN'], $query);
+        $response = $this->request(
+            EndPoint::get('GetLowestOfferListingsForASIN'),
+            $query
+        );
         
         if (isset($response['GetLowestOfferListingsForASINResult'])) {
             $response = $response['GetLowestOfferListingsForASINResult'];
@@ -282,7 +211,10 @@ class MWSClient{
             'FulfillmentChannel.Channel.1' => 'MFN'
         ];
         
-        $response = $this->request($this->endPoints['ListOrders'], $query);
+        $response = $this->request(
+            EndPoint::get('ListOrders'),
+            $query
+        );
         
         if (isset($response['ListOrdersResult']['Orders']['Order'])) {
             $response = $response['ListOrdersResult']['Orders']['Order'];
@@ -302,7 +234,7 @@ class MWSClient{
      */
     public function GetOrder($AmazonOrderId)
     { 
-        $response = $this->request($this->endPoints['GetOrder'], [
+        $response = $this->request(EndPoint::get('GetOrder'), [
             'AmazonOrderId.Id.1' => $AmazonOrderId
         ]); 
         
@@ -320,7 +252,7 @@ class MWSClient{
      */
     public function ListOrderItems($AmazonOrderId)
     {
-        $response = $this->request($this->endPoints['ListOrderItems'], [
+        $response = $this->request(EndPoint::get('ListOrderItems'), [
             'AmazonOrderId' => $AmazonOrderId
         ]);
         
@@ -352,7 +284,12 @@ class MWSClient{
             $counter++;
         }
         
-        $response = $this->request($this->endPoints['GetMatchingProductForId'], $array, null, true); 
+        $response = $this->request(
+            EndPoint::get('GetMatchingProductForId'),
+            $array,
+            null,
+            true
+        ); 
         
         $languages = [
             'de-DE', 'en-EN', 'es-ES', 'fr-FR', 'it-IT', 'en-US'
@@ -419,7 +356,7 @@ class MWSClient{
      */
     public function GetReportList()
     {
-        return $this->request($this->endPoints['GetReportList']);   
+        return $this->request(EndPoint::get('GetReportList'));   
     }
     
     /**
@@ -489,7 +426,7 @@ class MWSClient{
      */
     public function GetFeedSubmissionResult($FeedSubmissionId)
     {
-        $result = $this->request($this->endPoints['GetFeedSubmissionResult'], [
+        $result = $this->request(EndPoint::get('GetFeedSubmissionResult'), [
             'FeedSubmissionId' => $FeedSubmissionId
         ]); 
         
@@ -537,7 +474,11 @@ class MWSClient{
             $query['MarketplaceIdList.Id.1'] = $this->config['Marketplace_Id'];        
         }
         
-        $response = $this->request($this->endPoints['SubmitFeed'], $query, $feedContent);
+        $response = $this->request(
+            EndPoint::get('SubmitFeed'),
+            $query,
+            $feedContent
+        );
         
         return $response['SubmitFeedResult']['FeedSubmissionInfo'];
     }
@@ -592,7 +533,10 @@ class MWSClient{
             }
         }
     
-        $result = $this->request($this->endPoints['RequestReport'], $query);
+        $result = $this->request(
+            EndPoint::get('RequestReport'),
+            $query
+        );
         
         if (isset($result['RequestReportResult']['ReportRequestInfo']['ReportRequestId'])) {
             return $result['RequestReportResult']['ReportRequestInfo']['ReportRequestId'];
@@ -614,7 +558,7 @@ class MWSClient{
             return [];
         } else if ($status !== false && $status['ReportProcessingStatus'] === '_DONE_') {
             
-            $result = $this->request($this->endPoints['GetReport'], [
+            $result = $this->request(EndPoint::get('GetReport'), [
                 'ReportId' => $status['GeneratedReportId']
             ]);
             
@@ -642,7 +586,7 @@ class MWSClient{
      */
     public function GetReportRequestStatus($ReportId)
     {
-        $result = $this->request($this->endPoints['GetReportRequestList'], [
+        $result = $this->request(EndPoint::get('GetReportRequestList'), [
             'ReportRequestIdList.Id.1' => $ReportId    
         ]);
           
