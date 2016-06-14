@@ -78,6 +78,7 @@ print_r($report_content);
 ```
 ### Available methods:
 Generated, view source for detailed argument description.
+All methods starting with an uppercase char are also documented in the [Amazon MWS documentation](http://docs.developer.amazonservices.com/en_US/dev_guide/index.html)
 
 ```php
 // Returns the current competitive price of a product, based on ASIN.
