@@ -260,6 +260,44 @@ class MWSClient{
     }
     
     /**
+     * Returns the parent product categories that a product belongs to, based on SellerSKU.
+     * @param string $SellerSKU
+     * @return array if found, false if not found
+     */
+    public function GetProductCategoriesForSKU($SellerSKU)
+    {
+        $result = $this->request(EndPoint::get('GetProductCategoriesForSKU'), [
+            'MarketplaceId' => $this->config['Marketplace_Id'],
+            'SellerSKU' => $SellerSKU
+        ]);
+        
+        if (isset($result['GetProductCategoriesForSKUResult']['Self'])) {
+            return $result['GetProductCategoriesForSKUResult']['Self'];    
+        } else {
+            return false;    
+        }
+    }
+    
+    /**
+     * Returns the parent product categories that a product belongs to, based on ASIN.
+     * @param string $ASIN
+     * @return array if found, false if not found
+     */
+    public function GetProductCategoriesForASIN($ASIN)
+    {
+        $result = $this->request(EndPoint::get('GetProductCategoriesForASIN'), [
+            'MarketplaceId' => $this->config['Marketplace_Id'],
+            'ASIN' => $ASIN
+        ]);
+        
+        if (isset($result['GetProductCategoriesForASINResult']['Self'])) {
+            return $result['GetProductCategoriesForASINResult']['Self'];    
+        } else {
+            return false;    
+        }
+    }
+    
+    /**
      * Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
      * @param array  $list A list of id's
      * @param string [$type = 'ASIN']  the identifier name

@@ -6,6 +6,18 @@ use Exception;
 class MWSEndPoint{
     
     public static $endpoints = [
+        'GetProductCategoriesForSKU' => [
+            'method' => 'POST',
+            'action' => 'GetProductCategoriesForSKU',
+            'path' => '/Products/2011-10-01',
+            'date' => '2011-10-01'
+        ],
+        'GetProductCategoriesForASIN' => [
+            'method' => 'POST',
+            'action' => 'GetProductCategoriesForASIN',
+            'path' => '/Products/2011-10-01',
+            'date' => '2011-10-01'
+        ],
         'GetFeedSubmissionResult' => [
             'method' => 'POST',
             'action' => 'GetFeedSubmissionResult',
