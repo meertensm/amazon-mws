@@ -142,6 +142,23 @@ class MWSClient{
     }
     
     /**
+     * A method to quickly check if the supplied credentials are valid
+     * @return boolean
+     */
+    public function validateCredentials()
+    {
+        try{
+            $this->ListOrderItems('validate');  
+        } catch(Exception $e) {
+            if ($e->getMessage() == 'Invalid AmazonOrderId: validate') {
+                return true;
+            } else {
+                return false;    
+            }
+        }
+    }
+    
+    /**
      * Returns the current competitive price of a product, based on ASIN.
      * @param array [$asin_array = []]
      * @return array

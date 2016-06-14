@@ -17,6 +17,13 @@ $client = new MCS\MWSClient([
     'Access_Key_ID' => '',
     'Secret_Access_Key' => '',
 ]);
+
+// Optionally check if the supplied credentials are valid
+if ($client->validateCredentials()) {
+    // Credentials are valid
+} else {
+    // Credentials are not valid
+}
 ```
 ### Get orders
 ```php
