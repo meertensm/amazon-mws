@@ -76,7 +76,7 @@ $reportId = $client->RequestReport('_GET_MERCHANT_LISTINGS_DATA_');
 $report_content = $client->GetReport($reportId);
 print_r($report_content);
 ```
-Methods available at this time:
+### Available methods:
 - validateCredentials
 - GetCompetitivePricingForASIN
 - GetLowestPricedOffersForASIN
