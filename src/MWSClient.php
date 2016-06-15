@@ -403,15 +403,15 @@ class MWSClient{
     
     /**
      * Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
-     * @param array  $list A list of id's
+     * @param array $array A list of id's
      * @param string [$type = 'ASIN']  the identifier name
      * @return array
      */
-    public function GetMatchingProductForId(array $list, $type = 'ASIN')
+    public function GetMatchingProductForId(array $array, $type = 'ASIN')
     { 
-        $list = array_unique($list);
+        $array = array_unique($array);
         
-        if(count($list) > 5) {
+        if(count($array) > 5) {
             throw new Exception('Maximum number of id\'s = 5');    
         }
         
@@ -421,7 +421,7 @@ class MWSClient{
             'IdType' => $type
         ];
         
-        foreach($list as $key){
+        foreach($array as $key){
             $array['IdList.Id.' . $counter] = $key; 
             $counter++;
         }
@@ -502,6 +502,31 @@ class MWSClient{
     }
     
     /**
+     * Returns your active recommendations for a specific category or for all categories for a specific marketplace.
+     * @param string [$RecommendationCategory = null] One of: Inventory, Selection, Pricing, Fulfillment, ListingQuality, GlobalSelling, Advertising
+     * @return array/false if no result
+     */
+    public function ListRecommendations($RecommendationCategory = null)
+    {
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id']
+        ];
+        
+        if (!is_null($RecommendationCategory)) {
+            $query['RecommendationCategory'] = $RecommendationCategory;    
+        }
+        
+        $result = $this->request('ListRecommendations', $query);
+        
+        if (isset($result['ListRecommendationsResult'])) {
+            return $result['ListRecommendationsResult'];
+        } else {
+            return false;    
+        }
+        
+    }
+    
+    /**
      * Returns a list of marketplaces that the seller submitting the request can sell in, and a list of participations that include seller-specific information in that marketplace
      * @return array
      */
@@ -576,7 +601,7 @@ class MWSClient{
     }
     
     /**
-     * Get a feed's submission status
+     * Returns the feed processing report and the Content-MD5 header.
      * @param string $FeedSubmissionId
      * @return array
      */

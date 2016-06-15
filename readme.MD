@@ -82,25 +82,25 @@ All methods starting with an uppercase character are also documented in the [Ama
 
 ```php
 // Returns the current competitive price of a product, based on ASIN.
-$client->GetCompetitivePricingForASIN($asin_array);
+$client->GetCompetitivePricingForASIN($asin_array = []);
 
-// Get a feed's submission status
+// Returns the feed processing report and the Content-MD5 header.
 $client->GetFeedSubmissionResult($FeedSubmissionId);
 
 // Returns pricing information for the lowest-price active offer listings for up to 20 products, based on ASIN.
-$client->GetLowestOfferListingsForASIN($asin_array, $ItemCondition);
+$client->GetLowestOfferListingsForASIN($asin_array = [], $ItemCondition = null);
 
 // Returns lowest priced offers for a single product, based on ASIN.
-$client->GetLowestPricedOffersForASIN($asin, $ItemCondition);
+$client->GetLowestPricedOffersForASIN($asin, $ItemCondition = 'New');
 
 // Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
-$client->GetMatchingProductForId($list, $type);
+$client->GetMatchingProductForId($array, $type = 'ASIN');
 
 // Returns pricing information for your own offer listings, based on ASIN.
-$client->GetMyPriceForASIN($asin_array, $ItemCondition);
+$client->GetMyPriceForASIN($asin_array = [], $ItemCondition = null);
 
 // Returns pricing information for your own offer listings, based on SKU.
-$client->GetMyPriceForSKU($sku_array, $ItemCondition);
+$client->GetMyPriceForSKU($sku_array = [], $ItemCondition = null);
 
 // Returns an order based on the AmazonOrderId values that you specify.
 $client->GetOrder($AmazonOrderId);
@@ -129,11 +129,14 @@ $client->ListOrderItems($AmazonOrderId);
 // Returns orders created or updated during a time frame that you specify.
 $client->ListOrders($from);
 
+// Returns your active recommendations for a specific category or for all categories for a specific marketplace.
+$client->ListRecommendations($RecommendationCategory = null);
+
 // Request a report
-$client->RequestReport($report, $StartDate, $EndDate);
+$client->RequestReport($report, $StartDate = null, $EndDate = null);
 
 // Submit a feed to MWS.
-$client->SubmitFeed($FeedType, $feedContent, $debug);
+$client->SubmitFeed($FeedType, $feedContent, $debug = false);
 
 // Update a product's price
 $client->updatePrice($array);
