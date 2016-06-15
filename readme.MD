@@ -16,6 +16,7 @@ $client = new MCS\MWSClient([
     'Seller_Id' => '',
     'Access_Key_ID' => '',
     'Secret_Access_Key' => '',
+    'MWSAuthToken' => '' // Optional. Only use this key if you are a third party user/developer
 ]);
 
 // Optionally check if the supplied credentials are valid
@@ -76,7 +77,7 @@ $reportId = $client->RequestReport('_GET_MERCHANT_LISTINGS_DATA_');
 $report_content = $client->GetReport($reportId);
 print_r($report_content);
 ```
-### Available methods:
+### Available methods
 Generated, view source for detailed argument description.
 All methods starting with an uppercase character are also documented in the [Amazon MWS documentation](http://docs.developer.amazonservices.com/en_US/dev_guide/index.html)
 

@@ -22,6 +22,7 @@ class MWSClient{
         'Marketplace_Id' => null,
         'Access_Key_ID' => null,
         'Secret_Access_Key' => null,
+        'MWSAuthToken' => null,
         'Application_Version' => '0.0.*'
     ];  
     
@@ -41,12 +42,19 @@ class MWSClient{
     
     public function __construct(array $config)
     {   
+        
         foreach($config as $key => $value) {
-            $this->config[$key] = $value;
+            if (array_key_exists($key, $this->config)) {
+                $this->config[$key] = $value;
+            }
         }
         
-        foreach($this->config as $key => $value) {
-            if(is_null($value)) {
+        $required_keys = [
+            'Marketplace_Id', 'Seller_Id', 'Access_Key_ID', 'Secret_Access_Key'
+        ];
+        
+        foreach ($required_keys as $key) {
+            if(is_null($this->config[$key])) {
                 throw new Exception('Required field ' . $key . ' is not set');    
             }
         } 
@@ -797,6 +805,10 @@ class MWSClient{
             'SignatureVersion' => self::SIGNATURE_VERSION,
             'Version' => $endPoint['date'],
         ], $query);
+        
+        if (!is_null($this->config['MWSAuthToken'])) {
+            $query['MWSAuthToken'] = $this->config['MWSAuthToken'];
+        }
         
         if (isset($query['MarketplaceId'])) {
             unset($query['MarketplaceId.Id.1']);
