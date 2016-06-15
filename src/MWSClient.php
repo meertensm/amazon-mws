@@ -619,7 +619,7 @@ class MWSClient{
     }
     
     /**
-     * Submit a feed to MWS. 
+     * Uploads a feed for processing by Amazon MWS.
      * @param string $FeedType (http://docs.developer.amazonservices.com/en_US/feeds/Feeds_FeedType.html)
      * @param mixed $feedContent Array will be converted to xml using https://github.com/spatie/array-to-xml. Strings will not be modified.
      * @param boolean $debug Return the generated xml and don't send it to amazon
@@ -686,7 +686,7 @@ class MWSClient{
     }
     
     /**
-     * Request a report
+     * Creates a report request and submits the request to Amazon MWS.
      * @param string $report (http://docs.developer.amazonservices.com/en_US/reports/Reports_ReportType.html)
      * @param DateTime [$StartDate = null]
      * @param EndDate [$EndDate = null]

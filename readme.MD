@@ -132,10 +132,10 @@ $client->ListOrders($from);
 // Returns your active recommendations for a specific category or for all categories for a specific marketplace.
 $client->ListRecommendations($RecommendationCategory = null);
 
-// Request a report
+// Creates a report request and submits the request to Amazon MWS.
 $client->RequestReport($report, $StartDate = null, $EndDate = null);
 
-// Submit a feed to MWS.
+// Uploads a feed for processing by Amazon MWS.
 $client->SubmitFeed($FeedType, $feedContent, $debug = false);
 
 // Update a product's price
