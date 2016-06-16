@@ -502,11 +502,21 @@ class MWSClient{
     
     /**
      * Returns a list of reports that were created in the previous 90 days.
+     * @param array [$ReportTypeList = []]
      * @return array
      */
-    public function GetReportList()
+    public function GetReportList($ReportTypeList = [])
     {
-        return $this->request('GetReportList');   
+        $array = [];
+        $counter = 1;
+        if (count($ReportTypeList)) {
+            foreach($ReportTypeList as $ReportType) {
+                $array['ReportTypeList.Type.' . $counter] = $ReportType;
+                $counter++;
+            }
+        }
+        
+        return $this->request('GetReportList', $array);   
     }
     
     /**

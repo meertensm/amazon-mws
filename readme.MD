@@ -116,7 +116,7 @@ $client->GetProductCategoriesForSKU($SellerSKU);
 $client->GetReport($ReportId);
 
 // Returns a list of reports that were created in the previous 90 days.
-$client->GetReportList();
+$client->GetReportList($ReportTypeList = []);
 
 // Get a report's processing status
 $client->GetReportRequestStatus($ReportId);
