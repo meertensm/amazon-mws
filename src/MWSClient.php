@@ -411,15 +411,15 @@ class MWSClient{
     
     /**
      * Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
-     * @param array $array A list of id's
+     * @param array $asin_array A list of id's
      * @param string [$type = 'ASIN']  the identifier name
      * @return array
      */
-    public function GetMatchingProductForId(array $array, $type = 'ASIN')
+    public function GetMatchingProductForId(array $asin_array, $type = 'ASIN')
     { 
-        $array = array_unique($array);
+        $asin_array = array_unique($asin_array);
         
-        if(count($array) > 5) {
+        if(count($asin_array) > 5) {
             throw new Exception('Maximum number of id\'s = 5');    
         }
         
@@ -429,8 +429,8 @@ class MWSClient{
             'IdType' => $type
         ];
         
-        foreach($array as $key){
-            $array['IdList.Id.' . $counter] = $key; 
+        foreach($asin_array as $asin){
+            $array['IdList.Id.' . $counter] = $asin; 
             $counter++;
         }
         
