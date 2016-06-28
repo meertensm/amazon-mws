@@ -368,7 +368,13 @@ class MWSClient{
             'AmazonOrderId' => $AmazonOrderId
         ]);
         
-        return array_values($response['ListOrderItemsResult']['OrderItems']);   
+        $result = array_values($response['ListOrderItemsResult']['OrderItems']);
+        
+        if (isset($result[0]['QuantityOrdered'])) {
+            return $result;  
+        } else {
+            return $result[0];   
+        }  
     }
     
     /**
