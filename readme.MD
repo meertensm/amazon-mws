@@ -46,6 +46,19 @@ $result = $client->GetMatchingProductForId([
 
 print_r($result);
 ```
+### Create or update a product
+```php
+$product = new MCS\MWSProduct();
+$product->sku = 'TESTNOTFORSALE';
+$product->price = '1000.00';
+$product->product_id = 'B0031S9***';
+$product->product_id_type = 'ASIN';
+$product->condition_type = 'New';
+$product->quantity = 10;
+// You can also submit an array of MWSProduct objects
+$result = $client->postProduct($product);  
+```
+
 ### Update product stock
 ```php
 $result = $client->updateStock([
@@ -95,7 +108,7 @@ $client->GetLowestOfferListingsForASIN($asin_array = [], $ItemCondition = null);
 $client->GetLowestPricedOffersForASIN($asin, $ItemCondition = 'New');
 
 // Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
-$client->GetMatchingProductForId($array, $type = 'ASIN');
+$client->GetMatchingProductForId($asin_array, $type = 'ASIN');
 
 // Returns pricing information for your own offer listings, based on ASIN.
 $client->GetMyPriceForASIN($asin_array = [], $ItemCondition = null);
@@ -138,6 +151,9 @@ $client->RequestReport($report, $StartDate = null, $EndDate = null);
 
 // Uploads a feed for processing by Amazon MWS.
 $client->SubmitFeed($FeedType, $feedContent, $debug = false);
+
+// Post to create or update a product (_POST_FLAT_FILE_LISTINGS_DATA_)
+$client->postProduct($MWSProduct);
 
 // Update a product's price
 $client->updatePrice($array);

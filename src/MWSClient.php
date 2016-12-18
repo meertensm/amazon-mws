@@ -6,6 +6,8 @@ use Exception;
 use DateTimeZone;
 use MCS\MWSEndPoint;
 use League\Csv\Reader;
+use League\Csv\Writer;
+use SplTempFileObject;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Spatie\ArrayToXml\ArrayToXml;
@@ -28,16 +30,16 @@ class MWSClient{
     
     private $MarketplaceIds = [
         'A2EUQ1WTGCTBG2' => 'mws.amazonservices.ca',
-        'ATVPDKIKX0DER'  => 'mws.amazonservices.com',
+        'ATVPDKIKX0DER' => 'mws.amazonservices.com',
         'A1AM78C64UM0Y8' => 'mws.amazonservices.com.mx',
         'A1PA6795UKMFR9' => 'mws-eu.amazonservices.com',
         'A1RKKUPIHCS9HS' => 'mws-eu.amazonservices.com',
         'A13V1IB3VIYZZH' => 'mws-eu.amazonservices.com',
-        'A21TJRUUN4KGV'  => 'mws.amazonservices.in',
-        'APJ6JRA9NG5V4'  => 'mws-eu.amazonservices.com',
+        'A21TJRUUN4KGV' => 'mws.amazonservices.in',
+        'APJ6JRA9NG5V4' => 'mws-eu.amazonservices.com',
         'A1F83G8C2ARO7P' => 'mws-eu.amazonservices.com',
         'A1VC38T7YXB528' => 'mws.amazonservices.jp',
-        'AAHKV2X7AFYLW'  => 'mws.amazonservices.com.cn',
+        'AAHKV2X7AFYLW' => 'mws.amazonservices.com.cn',
     ];
     
     public function __construct(array $config)
@@ -621,6 +623,46 @@ class MWSClient{
         }
         
         return $this->SubmitFeed('_POST_PRODUCT_PRICING_DATA_', $feed);
+        
+    }
+    
+    /**
+     * Post to create or update a product (_POST_FLAT_FILE_LISTINGS_DATA_)
+     * @param  object $MWSProduct or array of MWSProduct objects
+     * @return array
+     */
+    public function postProduct($MWSProduct) {
+        
+        if (!is_array($MWSProduct)) {
+            $MWSProduct = [$MWSProduct];        
+        }
+        
+        $csv = Writer::createFromFileObject(new SplTempFileObject());
+        
+        $csv->setDelimiter("\t");
+        $csv->setInputEncoding('iso-8859-1');
+        
+        $csv->insertOne(['TemplateType=Offer', 'Version=2014.0703']);
+        
+        $header = ['sku', 'price', 'quantity', 'product-id', 
+            'product-id-type', 'condition-type', 'condition-note', 
+            'ASIN-hint', 'title', 'product-tax-code', 'operation-type',
+            'sale-price', 'sale-start-date', 'sale-end-date', 'leadtime-to-ship',
+            'launch-date', 'is-giftwrap-available', 'is-gift-message-available',
+            'fulfillment-center-id', 'main-offer-image', 'offer-image1',
+            'offer-image2', 'offer-image3', 'offer-image4', 'offer-image5'
+        ];
+        
+        $csv->insertOne($header);
+        $csv->insertOne($header);
+        
+        foreach ($MWSProduct as $product) {
+            $csv->insertOne(
+                array_values($product->toArray())
+            );
+        }
+        
+        return $this->SubmitFeed('_POST_FLAT_FILE_LISTINGS_DATA_', $csv);    
         
     }
     
