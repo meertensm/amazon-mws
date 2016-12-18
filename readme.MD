@@ -55,8 +55,13 @@ $product->product_id = 'B0031S9***';
 $product->product_id_type = 'ASIN';
 $product->condition_type = 'New';
 $product->quantity = 10;
-// You can also submit an array of MWSProduct objects
-$result = $client->postProduct($product);  
+
+if ($product->validate()) {
+    // You can also submit an array of MWSProduct objects
+    $result = $client->postProduct($product);    
+} else {
+    $errors = $product->getValidationErrors();        
+}  
 ```
 
 ### Update product stock
