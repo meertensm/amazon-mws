@@ -901,11 +901,11 @@ class MWSClient{
                 hash_hmac(
                     'sha256', 
                     $endPoint['method']
-                    . PHP_EOL 
+                    . "\n" 
                     . $this->config['Region_Host']
-                    . PHP_EOL 
+                    . "\n" 
                     . $endPoint['path'] 
-                    . PHP_EOL 
+                    . "\n" 
                     . http_build_query($query), 
                     $this->config['Secret_Access_Key'], 
                     true
