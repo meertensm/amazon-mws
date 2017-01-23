@@ -761,6 +761,7 @@ class MWSClient{
     public function RequestReport($report, $StartDate = null, $EndDate = null)
     {
         $query = [
+            'MarketplaceIdList.Id.1' => $this->config['Marketplace_Id'],
             'ReportType' => $report
         ];
         
@@ -869,6 +870,10 @@ class MWSClient{
         }
         
         if (isset($query['MarketplaceId'])) {
+            unset($query['MarketplaceId.Id.1']);
+        }
+        
+        if (isset($query['MarketplaceIdList.Id.1'])) {
             unset($query['MarketplaceId.Id.1']);
         }
         
