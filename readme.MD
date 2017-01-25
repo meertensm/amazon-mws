@@ -146,7 +146,7 @@ $client->ListMarketplaceParticipations();
 $client->ListOrderItems($AmazonOrderId);
 
 // Returns orders created or updated during a time frame that you specify.
-$client->ListOrders($from);
+$client->ListOrders($from, $all = false);
 
 // Returns your active recommendations for a specific category or for all categories for a specific marketplace.
 $client->ListRecommendations($RecommendationCategory = null);

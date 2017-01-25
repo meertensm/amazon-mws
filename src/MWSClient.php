@@ -314,9 +314,10 @@ class MWSClient{
     /**
      * Returns orders created or updated during a time frame that you specify.
      * @param object DateTime $from 
+     * @param boolean DateTime $all, list orders from all marketplaces
      * @return array
      */
-    public function ListOrders(DateTime $from)
+    public function ListOrders(DateTime $from, $all = false)
     {
         $query = [
             'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp()),
@@ -324,6 +325,14 @@ class MWSClient{
             'OrderStatus.Status.2' => 'PartiallyShipped',
             'FulfillmentChannel.Channel.1' => 'MFN'
         ];
+        
+        if ($all == true) {
+            $counter = 1;
+            foreach($this->MarketplaceIds as $key => $value) {
+                $query['MarketplaceId.Id.' . $counter] = $key;
+                $counter = $counter + 1;
+            }
+        }
         
         $response = $this->request(
             'ListOrders',
@@ -854,16 +863,22 @@ class MWSClient{
     
         $endPoint = MWSEndPoint::get($endPoint);
         
-        $query = array_merge([
+        $merge = [
             'Timestamp' => gmdate(self::DATE_FORMAT, time()),
             'AWSAccessKeyId' => $this->config['Access_Key_ID'],
             'Action' => $endPoint['action'],
-            'MarketplaceId.Id.1' => $this->config['Marketplace_Id'],
+            //'MarketplaceId.Id.1' => $this->config['Marketplace_Id'],
             'SellerId' => $this->config['Seller_Id'],
             'SignatureMethod' => self::SIGNATURE_METHOD,
             'SignatureVersion' => self::SIGNATURE_VERSION,
             'Version' => $endPoint['date'],
-        ], $query);
+        ];
+        
+        $query = array_merge($merge, $query);
+        
+        if (!isset($query['MarketplaceId.Id.1'])) {
+            $query['MarketplaceId.Id.1'] = $this->config['Marketplace_Id'];
+        }
         
         if (!is_null($this->config['MWSAuthToken'])) {
             $query['MWSAuthToken'] = $this->config['MWSAuthToken'];
@@ -937,7 +952,7 @@ class MWSClient{
                 return $body;
             }
            
-        } catch(BadResponseException $e) {
+        } catch (BadResponseException $e) {
             if ($e->hasResponse()) {
                 $message = $e->getResponse();
                 $message = $message->getBody();
