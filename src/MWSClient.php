@@ -42,6 +42,8 @@ class MWSClient{
         'AAHKV2X7AFYLW' => 'mws.amazonservices.com.cn',
     ];
     
+    protected $debugNextFeed = false;
+    
     public function __construct(array $config)
     {   
         
@@ -69,6 +71,14 @@ class MWSClient{
         $this->config['Region_Host'] = $this->MarketplaceIds[$this->config['Marketplace_Id']];
         $this->config['Region_Url'] = 'https://' . $this->config['Region_Host'];
         
+    }
+    
+    /**
+     * Call this method to get the raw feed instead of sending it
+     */
+    public function debugNextFeed()
+    {
+        $this->debugNextFeed = true;
     }
     
     /**
@@ -716,6 +726,9 @@ class MWSClient{
         
         if ($debug === true) {
             return $feedContent;    
+        } else if ($this->debugNextFeed == true) {
+            $this->debugNextFeed = false; 
+            return $feedContent;
         }
         
         $query = [
