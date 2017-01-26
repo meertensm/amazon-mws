@@ -20,7 +20,7 @@ class MWSProduct{
         'UsedVeryGood', 'UsedGood', 'UsedAcceptable'
     ];
     
-    public function __construct(array $array)
+    public function __construct(array $array = [])
     {
         foreach ($array as $property => $value) {
             $this->{$property} = $value;
