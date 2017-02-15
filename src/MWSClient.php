@@ -739,9 +739,9 @@ class MWSClient{
             'SellerId' => false,
         ];
         
-        //if ($FeedType === '_POST_PRODUCT_PRICING_DATA_') {
+        if ($FeedType === '_POST_PRODUCT_PRICING_DATA_') {
             $query['MarketplaceIdList.Id.1'] = $this->config['Marketplace_Id'];        
-        //}
+        }
         
         $response = $this->request(
             'SubmitFeed',
