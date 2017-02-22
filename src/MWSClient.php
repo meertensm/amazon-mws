@@ -326,15 +326,16 @@ class MWSClient{
      * @param object DateTime $from 
      * @param boolean $allMarketplaces, list orders from all marketplaces
      * @param array $states, an array containing orders states you want to filter on
+     * @param string $FulfillmentChannel 
      * @return array
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
-    ])
+    ], $FulfillmentChannel = 'MFN')
     {
         $query = [
             'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp()),
-            'FulfillmentChannel.Channel.1' => 'MFN'
+            'FulfillmentChannel.Channel.1' => $FulfillmentChannel
         ];
         
         $counter = 1;
