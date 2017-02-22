@@ -146,7 +146,7 @@ $client->ListMarketplaceParticipations();
 $client->ListOrderItems($AmazonOrderId);
 
 // Returns orders created or updated during a time frame that you specify.
-$client->ListOrders($from, $all = false);
+$client->ListOrders($from, $allMarketplaces = false, $states = ['Unshipped', 'PartiallyShipped']);
 
 // Returns your active recommendations for a specific category or for all categories for a specific marketplace.
 $client->ListRecommendations($RecommendationCategory = null);
@@ -156,6 +156,9 @@ $client->RequestReport($report, $StartDate = null, $EndDate = null);
 
 // Uploads a feed for processing by Amazon MWS.
 $client->SubmitFeed($FeedType, $feedContent, $debug = false);
+
+// Call this method to get the raw feed instead of sending it
+$client->debugNextFeed();
 
 // Post to create or update a product (_POST_FLAT_FILE_LISTINGS_DATA_)
 $client->postProduct($MWSProduct);
