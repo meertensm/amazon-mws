@@ -630,32 +630,42 @@ class MWSClient{
      * Price has to be formatted as XSD Numeric Data Type (http://www.w3schools.com/xml/schema_dtypes_numeric.asp)
      * @return array feed submission result
      */
-    public function updatePrice(array $array)
-    {   
-        
-        $feed = [
+    public function updatePrice(array $standardprice, array $saleprice = null) {
+
+		$feed = [
             'MessageType' => 'Price',
             'Message' => []
         ];
-        
-        foreach ($array as $sku => $price) {
-            $feed['Message'][] = [
+
+		foreach ($standardprice as $sku => $price) {
+			$feed['Message'][] = [
                 'MessageID' => rand(),
                 'Price' => [
                     'SKU' => $sku,
                     'StandardPrice' => [
-                        '_value' => $price,
-                        '_attributes' => [
+                        '_value' => strval($price),
+						'_attributes' => [
                             'currency' => 'DEFAULT'
                         ]
                     ]
                 ]
-            ];  
-        }
-        
-        return $this->SubmitFeed('_POST_PRODUCT_PRICING_DATA_', $feed);
-        
-    }
+            ];
+
+			if (isset($saleprice[$sku]) && is_array($saleprice[$sku])) {
+				$feed['Message'][count($feed['Message']) - 1]['Price']['Sale'] = [
+					'StartDate' => $saleprice[$sku]['StartDate']->format(self::DATE_FORMAT),
+					'EndDate' => $saleprice[$sku]['EndDate']->format(self::DATE_FORMAT),
+					'SalePrice' => [
+						'_value' => strval($saleprice[$sku]['SalePrice']),
+						'_attributes' => [
+							'currency' => 'DEFAULT'
+						]]
+				];
+			}
+		}
+
+		return $this->SubmitFeed('_POST_PRODUCT_PRICING_DATA_', $feed);
+	}
     
     /**
      * Post to create or update a product (_POST_FLAT_FILE_LISTINGS_DATA_)
