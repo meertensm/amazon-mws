@@ -626,7 +626,9 @@ class MWSClient{
     
     /**
      * Update a product's price
-     * @param array $array an array containing sku as key and price as value
+     * @param array $standardprice an array containing sku as key and price as value
+     * @param array $salesprice an optional array with sku as key and value consisting of an array with key/value pairs for SalePrice, StartDate, EndDate
+     * Dates in DateTime object
      * Price has to be formatted as XSD Numeric Data Type (http://www.w3schools.com/xml/schema_dtypes_numeric.asp)
      * @return array feed submission result
      */
