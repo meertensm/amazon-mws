@@ -115,6 +115,9 @@ $client->GetLowestPricedOffersForASIN($asin, $ItemCondition = 'New');
 // Returns a list of products and their attributes, based on a list of ASIN, GCID, SellerSKU, UPC, EAN, ISBN, and JAN values.
 $client->GetMatchingProductForId($asin_array, $type = 'ASIN');
 
+// Returns a list of products and their attributes, based on an open text based query
+$client->ListMatchingProducts($query, $query_context_id = null);
+
 // Returns pricing information for your own offer listings, based on ASIN.
 $client->GetMyPriceForASIN($asin_array = [], $ItemCondition = null);
 

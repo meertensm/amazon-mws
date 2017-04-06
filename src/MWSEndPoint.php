@@ -1,10 +1,10 @@
-<?php 
+<?php
 namespace MCS;
 
 use Exception;
 
 class MWSEndPoint{
-    
+
     public static $endpoints = [
         'ListRecommendations' => [
             'method' => 'POST',
@@ -102,6 +102,14 @@ class MWSEndPoint{
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
         ],
+
+        'ListMatchingProducts' => [
+            'method' => 'POST',
+            'action' => 'ListMatchingProducts',
+            'path' => '/Products/2011-10-01',
+            'date' => '2011-10-01'
+        ],
+
         'GetCompetitivePricingForASIN' => [
             'method' => 'POST',
             'action' => 'GetCompetitivePricingForASIN',
@@ -121,13 +129,13 @@ class MWSEndPoint{
             'date' => '2011-10-01'
         ]
     ];
-    
+
     public static function get($key)
     {
         if (isset(self::$endpoints[$key])) {
-            return self::$endpoints[$key];    
+            return self::$endpoints[$key];
         } else {
-            throw new Exception('Call to undefined endpoint ' . $key);    
+            throw new Exception('Call to undefined endpoint ' . $key);
         }
     }
 }
