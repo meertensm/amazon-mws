@@ -1026,7 +1026,7 @@ class MWSClient{
                     . "\n"
                     . $endPoint['path']
                     . "\n"
-                    . http_build_query($query),
+                    . http_build_query($query, null, '&', PHP_QUERY_RFC3986),
                     $this->config['Secret_Access_Key'],
                     true
                 )
