@@ -530,7 +530,16 @@ class MWSClient{
                         }
                     }
 
+                    if (isset($product['Products']['Product']['AttributeSets']['ItemAttributes']['Feature'])) {
+                        $array['Feature'] = $product['Products']['Product']['AttributeSets']['ItemAttributes']['Feature'];
+                    }
 
+                    if (isset($product['Products']['Product']['AttributeSets']['ItemAttributes']['PackageDimensions'])) {
+                        $array['PackageDimensions'] = array_map(
+                            'floatval',
+                            $product['Products']['Product']['AttributeSets']['ItemAttributes']['PackageDimensions']
+                        );
+                    }
 
                     if (isset($product['Products']['Product']['AttributeSets']['ItemAttributes']['SmallImage'])) {
                         $image = $product['Products']['Product']['AttributeSets']['ItemAttributes']['SmallImage']['URL'];
