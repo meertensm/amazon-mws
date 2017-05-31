@@ -334,7 +334,7 @@ class MWSClient{
      * @return array
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
-        'Unshipped', 'PartiallyShipped'
+        'Unshipped', 'PartiallyShipped', 'Pending', 'Shipped'
     ], $FulfillmentChannel = 'MFN')
     {
         $query = [
@@ -361,13 +361,35 @@ class MWSClient{
             $query
         );
 
-        if (isset($response['ListOrdersResult']['Orders']['Order'])) {
-            $response = $response['ListOrdersResult']['Orders']['Order'];
-            if (array_keys($response) !== range(0, count($response) - 1)) {
-                return [$response];
+        if (isset($response['ListOrdersResult']['Orders']['Order'])) 
+        {
+            foreach ($response['ListOrdersResult']['Orders']['Order'] as $order) 
+            {
+                $orders [] = $order;
             }
-            return $response;
-        } else {
+            
+            if (isset($response['ListOrdersResult']['NextToken']))
+            {
+                do
+                {
+                    $query['NextToken'] = $response['ListOrdersResult']['NextToken'];
+                    $response = $this->request(
+                        'ListOrdersByNextToken',
+                        $query
+                    );
+
+                    foreach ($response['ListOrdersByNextTokenResult']['Orders']['Order'] as $order) 
+                    {
+                        $orders [] = $order;
+                    }
+                }
+                while (isset($response['ListOrdersByNextTokenResult']['NextToken'])); 
+            }
+
+            return $orders;
+        } 
+        else 
+        {
             return [];
         }
     }
