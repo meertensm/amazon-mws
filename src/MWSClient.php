@@ -326,26 +326,27 @@ class MWSClient{
     }
 
     /**
-     * Returns orders created or updated during a time frame that you specify.
+     * Returns orders by default all states during a time frame that you specify.
      * @param object DateTime $from
      * @param boolean $allMarketplaces, list orders from all marketplaces
      * @param array $states, an array containing orders states you want to filter on
      * @param string $FulfillmentChannel
      * @return array
      */
-    public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
-        'Unshipped', 'PartiallyShipped', 'Pending', 'Shipped'
-    ], $FulfillmentChannel = 'MFN')
+    public function ListOrders(DateTime $from, $states = null, $allMarketplaces = false, $FulfillmentChannel = 'MFN')
     {
         $query = [
             'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp()),
             'FulfillmentChannel.Channel.1' => $FulfillmentChannel
         ];
 
-        $counter = 1;
-        foreach ($states as $status) {
-            $query['OrderStatus.Status.' . $counter] = $status;
-            $counter = $counter + 1;
+        if (isset($states)) 
+        {
+            $counter = 1;
+            foreach ($states as $status) {
+                $query['OrderStatus.Status.' . $counter] = $status;
+                $counter = $counter + 1;
+            }
         }
 
         if ($allMarketplaces == true) {
@@ -363,25 +364,25 @@ class MWSClient{
 
         if (isset($response['ListOrdersResult']['Orders']['Order'])) 
         {
-            foreach ($response['ListOrdersResult']['Orders']['Order'] as $order) 
-            {
-                $orders [] = $order;
-            }
+            $orders = $response['ListOrdersResult']['Orders']['Order'];
             
             if (isset($response['ListOrdersResult']['NextToken']))
             {
+                $query['NextToken'] = $response['ListOrdersResult']['NextToken'];
                 do
                 {
-                    $query['NextToken'] = $response['ListOrdersResult']['NextToken'];
                     $response = $this->request(
                         'ListOrdersByNextToken',
                         $query
                     );
-
-                    foreach ($response['ListOrdersByNextTokenResult']['Orders']['Order'] as $order) 
+                    
+                    if (isset($response['ListOrdersByNextTokenResult']['NextToken'])) 
                     {
-                        $orders [] = $order;
+                        $query['NextToken'] = $response['ListOrdersByNextTokenResult']['NextToken'];
                     }
+                    
+                    $orders = array_merge($orders, $response['ListOrdersByNextTokenResult']['Orders']['Order']); 
+                   
                 }
                 while (isset($response['ListOrdersByNextTokenResult']['NextToken'])); 
             }
