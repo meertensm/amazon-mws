@@ -508,47 +508,62 @@ class MWSClient{
         $not_found = [];
 
         if (isset($response['GetMatchingProductForIdResult']) && is_array($response['GetMatchingProductForIdResult'])) {
-            $array = [];
-            foreach ($response['GetMatchingProductForIdResult'] as $product) {
+            foreach ($response['GetMatchingProductForIdResult'] as $result) {
 
                 //print_r($product);exit;
 
-                $asin = $product['@attributes']['Id'];
-                if ($product['@attributes']['status'] != 'Success') {
+                $asin = $result['@attributes']['Id'];
+                if ($result['@attributes']['status'] != 'Success') {
                     $not_found[] = $asin;
                 } else {
-                    $array = [];
-
-                    if(isset($product['Products']['Product']['Identifiers']['MarketplaceASIN']['ASIN']))
-                        $array["ASIN"] = $product['Products']['Product']['Identifiers']['MarketplaceASIN']['ASIN'];
-
-                    if (!isset($product['Products']['Product']['AttributeSets'])) {
-                        $product['Products']['Product'] = $product['Products']['Product'][0];
+                    if (isset($result['Products']['Product']['AttributeSets'])) {
+                        $products[0] = $result['Products']['Product'];
                     }
-                    foreach ($product['Products']['Product']['AttributeSets']['ItemAttributes'] as $key => $value) {
-                        if (is_string($key) && is_string($value)) {
-                            $array[$key] = $value;
+                    else{
+                        $products = $result['Products']['Product'];
+                    }
+                    foreach($products as $product){
+                        $array = [];
+                        if(isset($product['Identifiers']['MarketplaceASIN']['ASIN']))
+                        {
+                            $array["ASIN"] = $product['Identifiers']['MarketplaceASIN']['ASIN'];
                         }
-                    }
 
-                    if (isset($product['Products']['Product']['AttributeSets']['ItemAttributes']['Feature'])) {
-                        $array['Feature'] = $product['Products']['Product']['AttributeSets']['ItemAttributes']['Feature'];
-                    }
+                        foreach ($product['AttributeSets']['ItemAttributes'] as $key => $value) {
+                            if (is_string($key) && is_string($value)) {
+                                $array[$key] = $value;
+                            }
+                        }
 
-                    if (isset($product['Products']['Product']['AttributeSets']['ItemAttributes']['PackageDimensions'])) {
-                        $array['PackageDimensions'] = array_map(
-                            'floatval',
-                            $product['Products']['Product']['AttributeSets']['ItemAttributes']['PackageDimensions']
-                        );
-                    }
+                        if (isset($product['AttributeSets']['ItemAttributes']['Feature'])) {
+                            $array['Feature'] = $product['AttributeSets']['ItemAttributes']['Feature'];
+                        }
 
-                    if (isset($product['Products']['Product']['AttributeSets']['ItemAttributes']['SmallImage'])) {
-                        $image = $product['Products']['Product']['AttributeSets']['ItemAttributes']['SmallImage']['URL'];
-                        $array['medium_image'] = $image;
-                        $array['small_image'] = str_replace('._SL75_', '._SL50_', $image);
-                        $array['large_image'] = str_replace('._SL75_', '', $image);;
+                        if (isset($product['AttributeSets']['ItemAttributes']['PackageDimensions'])) {
+                            $array['PackageDimensions'] = array_map(
+                                'floatval',
+                                $product['AttributeSets']['ItemAttributes']['PackageDimensions']
+                            );
+                        }
+
+                        if (isset($product['AttributeSets']['ItemAttributes']['ListPrice'])) {
+                            $array['ListPrice'] = $product['AttributeSets']['ItemAttributes']['ListPrice'];
+                        }
+
+                        if (isset($product['AttributeSets']['ItemAttributes']['SmallImage'])) {
+                            $image = $product['AttributeSets']['ItemAttributes']['SmallImage']['URL'];
+                            $array['medium_image'] = $image;
+                            $array['small_image'] = str_replace('._SL75_', '._SL50_', $image);
+                            $array['large_image'] = str_replace('._SL75_', '', $image);;
+                        }
+                        if (isset($product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'])) {
+                            $array['Relationships'] = $product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'];
+                        }
+                        if (isset($product['SalesRankings']['SalesRank'])) {
+                            $array['SalesRank'] = $product['SalesRankings']['SalesRank'];
+                        }
+                        $found[$asin][] = $array;
                     }
-                    $found[$asin] = $array;
                 }
             }
         }
