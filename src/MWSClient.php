@@ -44,6 +44,7 @@ class MWSClient{
     ];
 
     protected $debugNextFeed = false;
+    protected $client = NULL;
 
     public function __construct(array $config)
     {
@@ -1058,10 +1059,12 @@ class MWSClient{
             );
 
             $requestOptions['query'] = $query;
+            
+            if($this->client === NULL) {
+                $this->client = new Client();
+            }
 
-            $client = new Client();
-
-            $response = $client->request(
+            $response = $this->client->request(
                 $endPoint['method'],
                 $this->config['Region_Url'] . $endPoint['path'],
                 $requestOptions
@@ -1093,5 +1096,9 @@ class MWSClient{
             }
             throw new Exception($message);
         }
+    }
+    
+    public function setClient(Client $client) {
+        $this->client = $client;
     }
 }
