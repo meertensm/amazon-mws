@@ -1020,8 +1020,8 @@ class MWSClient{
 	 */
     public function ListInventorySupply($sku_array = []){
 	
-	    if (count($sku_array) > 20) {
-		    throw new Exception('Maximum amount of SKU\'s for this call is 20');
+	    if (count($sku_array) > 50) {
+		    throw new Exception('Maximum amount of SKU\'s for this call is 50');
 	    }
 	
 	    $counter = 1;
