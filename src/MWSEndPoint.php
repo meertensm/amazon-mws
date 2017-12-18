@@ -72,6 +72,12 @@ class MWSEndPoint{
             'path' => '/',
             'date' => '2009-01-01'
         ],
+        'ListInventorySupply' => [
+            'method' => 'POST',
+            'action' => 'ListInventorySupply',
+            'path' => '/FulfillmentInventory',
+            'date' => '2010-10-01'
+        ],
         'ListOrders' => [
             'method' => 'POST',
             'action' => 'ListOrders',
