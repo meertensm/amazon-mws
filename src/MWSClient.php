@@ -160,7 +160,8 @@ class MWSClient{
             'ItemCondition' => $ItemCondition
         ];
 
-        return $this->request(
+        return $this->
+            (
             'GetLowestPricedOffersForASIN',
             $query
         );
@@ -1007,6 +1008,45 @@ class MWSClient{
 
         return false;
 
+    }
+    
+    /**
+	 * Get a list's inventory for Amazon's fulfillment
+	 *
+	 * @param array $sku_array
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+    public function ListInventorySupply($sku_array = []){
+	
+	    if (count($sku_array) > 20) {
+		    throw new Exception('Maximum amount of SKU\'s for this call is 20');
+	    }
+	
+	    $counter = 1;
+	    $query = [
+		    'MarketplaceId' => $this->config['Marketplace_Id']
+	    ];
+	
+	    foreach($sku_array as $key){
+		    $query['SellerSkus.member.' . $counter] = $key;
+		    $counter++;
+	    }
+	
+	    $response = $this->request(
+		    'ListInventorySupply',
+		    $query
+	    );
+	
+	    $result = [];
+	    if (isset($response['ListInventorySupplyResult']['InventorySupplyList']['member'])) {
+		    foreach ($response['ListInventorySupplyResult']['InventorySupplyList']['member'] as $ListInventorySupplyResult) {
+			    $result[] = $ListInventorySupplyResult;
+		    }
+	    }
+	    
+	    return $result;
     }
 
     /**
