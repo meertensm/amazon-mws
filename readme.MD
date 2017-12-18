@@ -155,6 +155,9 @@ $client->GetReportList($ReportTypeList = []);
 // Get a report's processing status
 $client->GetReportRequestStatus($ReportId);
 
+// Get a list's inventory for Amazon's fulfillment
+$client->ListInventorySupply($sku_array = []);
+
 // Returns a list of marketplaces that the seller submitting the request can sell in, and a list of participations that include seller-specific information in that marketplace
 $client->ListMarketplaceParticipations();
 
