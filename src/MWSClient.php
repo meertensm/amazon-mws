@@ -557,6 +557,9 @@ class MWSClient{
                         if (isset($product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'])) {
                             $array['Relationships'] = $product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'];
                         }
+			if (isset($product['Relationships']['VariationChild'])) {
+		            $array['Relationships'] = 'VariationParent';
+	                }
                         if (isset($product['SalesRankings']['SalesRank'])) {
                             $array['SalesRank'] = $product['SalesRankings']['SalesRank'];
                         }
