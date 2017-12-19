@@ -1037,8 +1037,8 @@ class MWSClient{
 	
 	    $result = [];
 	    if (isset($response['ListInventorySupplyResult']['InventorySupplyList']['member'])) {
-		    foreach ($response['ListInventorySupplyResult']['InventorySupplyList']['member'] as $ListInventorySupplyResult) {
-			    $result[] = $ListInventorySupplyResult;
+		    foreach ($response['ListInventorySupplyResult']['InventorySupplyList']['member'] as $index => $ListInventorySupplyResult) {
+			    $result[$index] = $ListInventorySupplyResult;
 		    }
 	    }
 	    
