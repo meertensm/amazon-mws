@@ -555,10 +555,11 @@ class MWSClient{
                             $array['large_image'] = str_replace('._SL75_', '', $image);;
                         }
                         if (isset($product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'])) {
-                            $array['Relationships'] = $product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'];
+                            $array['Parentage'] = 'child';
+			    $array['Relationships'] = $product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'];
                         }
 			if (isset($product['Relationships']['VariationChild'])) {
-		            $array['Relationships'] = 'VariationParent';
+		            $array['Parentage'] = 'parent';
 	                }
                         if (isset($product['SalesRankings']['SalesRank'])) {
                             $array['SalesRank'] = $product['SalesRankings']['SalesRank'];
