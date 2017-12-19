@@ -160,11 +160,7 @@ class MWSClient{
             'ItemCondition' => $ItemCondition
         ];
 
-        return $this->
-            (
-            'GetLowestPricedOffersForASIN',
-            $query
-        );
+        return $this->request( 'GetLowestPricedOffersForASIN', $query );
 
     }
 
