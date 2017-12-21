@@ -415,7 +415,37 @@ class MWSClient{
             return [];
         }
     }
+    /**
+     * Returns orders created or updated during a time frame that you specify.
+     * @param string $nextToken
+     * @return array
+     */
+    public function ListOrdersByNextToken($nextToken)
+    {
+        $query = [
+            'NextToken' => $nextToken,
+        ];
 
+        $response = $this->request(
+            'ListOrdersByNextToken',
+            $query
+        );
+        if (isset($response['ListOrdersByNextTokenResult']['Orders']['Order'])) {
+            if(isset($response['ListOrdersByNextTokenResult']['NextToken'])){
+                $data['ListOrders'] = $response['ListOrdersByNextTokenResult']['Orders']['Order'];
+                $data['NextToken'] = $response['ListOrdersByNextTokenResult']['NextToken'];
+                return $data;
+            }
+            $response = $response['ListOrdersByNextTokenResult']['Orders']['Order'];
+
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                return [$response];
+            }
+            return $response;
+        } else {
+            return [];
+        }
+    }
     /**
      * Returns an order based on the AmazonOrderId values that you specify.
      * @param string $AmazonOrderId
