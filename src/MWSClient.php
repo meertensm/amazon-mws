@@ -406,6 +406,11 @@ class MWSClient{
         );
 
         if (isset($response['ListOrdersResult']['Orders']['Order'])) {
+	    if(isset($response['ListOrdersResult']['NextToken'])){
+                $data['ListOrders'] = $response['ListOrdersResult']['Orders']['Order'];
+                $data['NextToken'] = $response['ListOrdersResult']['NextToken'];
+                return $data;
+            }
             $response = $response['ListOrdersResult']['Orders']['Order'];
             if (array_keys($response) !== range(0, count($response) - 1)) {
                 return [$response];
