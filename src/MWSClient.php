@@ -955,7 +955,7 @@ class MWSClient{
 
         $query = [
             'FeedType' => $FeedType,
-            'PurgeAndReplace' => 'false',
+            'PurgeAndReplace' => 'true',
             'Merchant' => $this->config['Seller_Id'],
             'MarketplaceId.Id.1' => false,
             'SellerId' => false,
@@ -1154,7 +1154,7 @@ class MWSClient{
             $query['MarketplaceId.Id.1'] = $this->config['Marketplace_Id'];
         }
 
-        if (!is_null($this->config['MWSAuthToken'])) {
+        if (!is_null($this->config['MWSAuthToken']) AND $this->config['MWSAuthToken'] != "") {
             $query['MWSAuthToken'] = $this->config['MWSAuthToken'];
         }
 
