@@ -379,11 +379,10 @@ class MWSClient{
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
-    ], $FulfillmentChannel = 'MFN')
+    ], $FulfillmentChannels = ['MFN','AFN'])
     {
         $query = [
-            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp()),
-            'FulfillmentChannel.Channel.1' => $FulfillmentChannel
+            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
         ];
 
         $counter = 1;
@@ -400,6 +399,16 @@ class MWSClient{
             }
         }
 
+	if(is_array($FulfillmentChannels)){
+	     $counter = 1;
+	     foreach ( $FulfillmentChannels as $fulfillmentChannel ) {
+		$query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
+		$counter = $counter + 1;
+	     }
+        } else {
+	     $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
+        }
+	    
         $response = $this->request(
             'ListOrders',
             $query
