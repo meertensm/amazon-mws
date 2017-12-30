@@ -932,7 +932,7 @@ class MWSClient{
      * @param boolean $debug Return the generated xml and don't send it to amazon
      * @return array
      */
-    public function SubmitFeed($FeedType, $feedContent, $debug = false)
+    public function SubmitFeed($FeedType, $feedContent, $debug = false, $options = [])
     {
 
         if (is_array($feedContent)) {
@@ -953,9 +953,11 @@ class MWSClient{
             return $feedContent;
         }
 
+	$purgeAndReplace = isset($options['PurgeAndReplace']) ? $options['PurgeAndReplace'] : false;
+	    
         $query = [
             'FeedType' => $FeedType,
-            'PurgeAndReplace' => 'true',
+            'PurgeAndReplace' => ($purgeAndReplace ? 'true' : 'false'),
             'Merchant' => $this->config['Seller_Id'],
             'MarketplaceId.Id.1' => false,
             'SellerId' => false,
@@ -1154,7 +1156,7 @@ class MWSClient{
             $query['MarketplaceId.Id.1'] = $this->config['Marketplace_Id'];
         }
 
-        if (!is_null($this->config['MWSAuthToken']) AND $this->config['MWSAuthToken'] != "") {
+        if (!is_null($this->config['MWSAuthToken']) and $this->config['MWSAuthToken'] != "") {
             $query['MWSAuthToken'] = $this->config['MWSAuthToken'];
         }
 
