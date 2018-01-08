@@ -379,7 +379,7 @@ class MWSClient{
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
-    ], $FulfillmentChannels = ['MFN','AFN'])
+    ], $FulfillmentChannel = 'MFN'
     {
         $query = [
             'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
