@@ -145,7 +145,52 @@ class MWSClient{
         return $array;
 
     }
+    
+        /**
+     * Returns the current competitive price of a product, based on SKU.
+     * @param array [$sku_array = []]
+     * @return array
+     */
+    public function GetCompetitivePricingForSKU($sku_array = [])
+    {
+        if (count($sku_array) > 20) {
+            throw new Exception('Maximum amount of SKU\'s for this call is 20');
+        }
 
+        $counter = 1;
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id']
+        ];
+
+        foreach($sku_array as $key){
+            $query['SellerSKUList.SellerSKU.' . $counter] = $key;
+            $counter++;
+        }
+
+        $response = $this->request(
+            'GetCompetitivePricingForSKU',
+            $query
+        );
+
+        if (isset($response['GetCompetitivePricingForSKUResult'])) {
+            $response = $response['GetCompetitivePricingForSKUResult'];
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                $response = [$response];
+            }
+        } else {
+            return [];
+        }
+
+        $array = [];
+        foreach ($response as $product) {
+            if (isset($product['Product']['CompetitivePricing']['CompetitivePrices']['CompetitivePrice']['Price'])) {
+                $array[$product['Product']['Identifiers']['SKUIdentifier']['SellerSKU']]['Price'] = $product['Product']['CompetitivePricing']['CompetitivePrices']['CompetitivePrice']['Price'];
+                $array[$product['Product']['Identifiers']['SKUIdentifier']['SellerSKU']]['Rank'] = $product['Product']['SalesRankings']['SalesRank'][1];
+            }
+        }
+        return $array;
+
+    }
     /**
      * Returns lowest priced offers for a single product, based on ASIN.
      * @param string $asin
@@ -371,6 +416,11 @@ class MWSClient{
         );
 
         if (isset($response['ListOrdersResult']['Orders']['Order'])) {
+	    if(isset($response['ListOrdersResult']['NextToken'])){
+                $data['ListOrders'] = $response['ListOrdersResult']['Orders']['Order'];
+                $data['NextToken'] = $response['ListOrdersResult']['NextToken'];
+                return $data;
+            }
             $response = $response['ListOrdersResult']['Orders']['Order'];
             if (array_keys($response) !== range(0, count($response) - 1)) {
                 return [$response];
@@ -380,7 +430,37 @@ class MWSClient{
             return [];
         }
     }
+    /**
+     * Returns orders created or updated during a time frame that you specify.
+     * @param string $nextToken
+     * @return array
+     */
+    public function ListOrdersByNextToken($nextToken)
+    {
+        $query = [
+            'NextToken' => $nextToken,
+        ];
 
+        $response = $this->request(
+            'ListOrdersByNextToken',
+            $query
+        );
+        if (isset($response['ListOrdersByNextTokenResult']['Orders']['Order'])) {
+            if(isset($response['ListOrdersByNextTokenResult']['NextToken'])){
+                $data['ListOrders'] = $response['ListOrdersByNextTokenResult']['Orders']['Order'];
+                $data['NextToken'] = $response['ListOrdersByNextTokenResult']['NextToken'];
+                return $data;
+            }
+            $response = $response['ListOrdersByNextTokenResult']['Orders']['Order'];
+
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                return [$response];
+            }
+            return $response;
+        } else {
+            return [];
+        }
+    }
     /**
      * Returns an order based on the AmazonOrderId values that you specify.
      * @param string $AmazonOrderId
@@ -862,7 +942,7 @@ class MWSClient{
      * @param boolean $debug Return the generated xml and don't send it to amazon
      * @return array
      */
-    public function SubmitFeed($FeedType, $feedContent, $debug = false)
+    public function SubmitFeed($FeedType, $feedContent, $debug = false, $options = [])
     {
 
         if (is_array($feedContent)) {
@@ -883,9 +963,11 @@ class MWSClient{
             return $feedContent;
         }
 
+	$purgeAndReplace = isset($options['PurgeAndReplace']) ? $options['PurgeAndReplace'] : false;
+	    
         $query = [
             'FeedType' => $FeedType,
-            'PurgeAndReplace' => 'false',
+            'PurgeAndReplace' => ($purgeAndReplace ? 'true' : 'false'),
             'Merchant' => $this->config['Seller_Id'],
             'MarketplaceId.Id.1' => false,
             'SellerId' => false,
@@ -1084,7 +1166,7 @@ class MWSClient{
             $query['MarketplaceId.Id.1'] = $this->config['Marketplace_Id'];
         }
 
-        if (!is_null($this->config['MWSAuthToken'])) {
+        if (!is_null($this->config['MWSAuthToken']) and $this->config['MWSAuthToken'] != "") {
             $query['MWSAuthToken'] = $this->config['MWSAuthToken'];
         }
 

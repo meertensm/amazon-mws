@@ -42,6 +42,12 @@ class MWSEndPoint{
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
         ],
+        'GetCompetitivePricingForSKU' => [
+            'method' => 'POST',
+            'action' => 'GetCompetitivePricingForSKU',
+            'path' => '/Products/2011-10-01',
+            'date' => '2011-10-01'
+        ],
         'GetFeedSubmissionResult' => [
             'method' => 'POST',
             'action' => 'GetFeedSubmissionResult',
@@ -81,6 +87,12 @@ class MWSEndPoint{
         'ListOrders' => [
             'method' => 'POST',
             'action' => 'ListOrders',
+            'path' => '/Orders/2013-09-01',
+            'date' => '2013-09-01'
+        ],
+        'ListOrdersByNextToken' => [
+            'method' => 'POST',
+            'action' => 'ListOrdersByNextToken',
             'path' => '/Orders/2013-09-01',
             'date' => '2013-09-01'
         ],
