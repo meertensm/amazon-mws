@@ -400,14 +400,14 @@ class MWSClient{
             }
         }
 
-	if(is_array($FulfillmentChannels)){
+	if(is_array($FulfillmentChannel)){
 	     $counter = 1;
-	     foreach ( $FulfillmentChannels as $fulfillmentChannel ) {
-		$query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
+	     foreach ( $FulfillmentChannel as $fulfillment ) {
+		$query['FulfillmentChannel.Channel.' . $counter] = $fulfillment;
 		$counter = $counter + 1;
 	     }
         } else {
-	     $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
+	     $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannel;
         }
 	    
         $response = $this->request(
