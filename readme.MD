@@ -36,6 +36,22 @@ foreach ($orders as $order) {
     print_r($items);
 }
 ```
+### Get Orders by Next Token
+    public function ListOrdersByNextToken(string $ListOrdersByNextToken)
+
+    {
+        $query = [
+            'NextToken' => $ListOrdersByNextToken,
+        ];
+
+        $response = $this->request(
+            'ListOrdersByNextToken',
+            $query
+        );
+            return $response;
+    }
+
+
 ### Get product attributes
 ```php
 $searchField = 'ASIN'; // Can be GCID, SellerSKU, UPC, EAN, ISBN, or JAN
