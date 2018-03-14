@@ -949,7 +949,7 @@ class MWSClient{
             $feedContent = $this->arrayToXml(
                 array_merge([
                     'Header' => [
-                        'DocumentVersion' => 1.01,
+                        'DocumentVersion' => '1.01',
                         'MerchantIdentifier' => $this->config['Seller_Id']
                     ]
                 ], $feedContent)
