@@ -5,6 +5,7 @@ use DateTime;
 use Exception;
 use DateTimeZone;
 use MCS\MWSEndPoint;
+use League\Csv\CharsetConverter;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use SplTempFileObject;
@@ -891,7 +892,7 @@ class MWSClient{
         $csv = Writer::createFromFileObject(new SplTempFileObject());
 
         $csv->setDelimiter("\t");
-        $csv->setInputEncoding('iso-8859-1');
+        CharsetConverter::addTo($csv, 'utf8', 'iso-8859-1');
 
         $csv->insertOne(['TemplateType=Offer', 'Version=2014.0703']);
 
