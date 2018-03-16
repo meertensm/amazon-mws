@@ -1,5 +1,5 @@
 {
-    "name": "mcs/amazon-mws",
+    "name": "lexo13/amazon-mws",
     "description": "Library to interface with Amazon MWS",
     "license": "MIT",
     "keywords": ["amazon", "mws"],
