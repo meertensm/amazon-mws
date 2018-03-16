@@ -21,5 +21,11 @@
         "psr-4": {
             "MCS\\": "src"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/lexo13/amazon-mws"
+        }
+    ]
 }
