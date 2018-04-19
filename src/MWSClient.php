@@ -380,7 +380,7 @@ class MWSClient{
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
-    ], $FulfillmentChannel = 'MFN')
+    ], $FulfillmentChannels = 'MFN')
     {
         $query = [
             'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
@@ -400,32 +400,33 @@ class MWSClient{
             }
         }
 
-	if(is_array($FulfillmentChannels)){
-	     $counter = 1;
-	     foreach ( $FulfillmentChannels as $fulfillmentChannel ) {
-		$query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
-		$counter = $counter + 1;
-	     }
+        if (is_array($FulfillmentChannels)) {
+            $counter = 1;
+            foreach ($FulfillmentChannels as $fulfillmentChannel) {
+                $query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
+                $counter = $counter + 1;
+            }
         } else {
-	     $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
+            $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
         }
-	    
-        $response = $this->request(
-            'ListOrders',
-            $query
-        );
+
+        $response = $this->request('ListOrders', $query);
 
         if (isset($response['ListOrdersResult']['Orders']['Order'])) {
-	    if(isset($response['ListOrdersResult']['NextToken'])){
+            if (isset($response['ListOrdersResult']['NextToken'])) {
                 $data['ListOrders'] = $response['ListOrdersResult']['Orders']['Order'];
                 $data['NextToken'] = $response['ListOrdersResult']['NextToken'];
                 return $data;
             }
+        
             $response = $response['ListOrdersResult']['Orders']['Order'];
+        
             if (array_keys($response) !== range(0, count($response) - 1)) {
                 return [$response];
             }
+        
             return $response;
+        
         } else {
             return [];
         }
