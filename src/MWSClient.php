@@ -7,6 +7,7 @@ use DateTimeZone;
 use MCS\MWSEndPoint;
 use League\Csv\Reader;
 use League\Csv\Writer;
+use League\Csv\Statement;
 use SplTempFileObject;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
@@ -1053,7 +1054,8 @@ class MWSClient{
     /**
      * Get a report's content
      * @param string $ReportId
-     * @return array on succes
+     * @return array on success
+     * @throws \Exception
      */
     public function GetReport($ReportId)
     {
@@ -1070,10 +1072,15 @@ class MWSClient{
             if (is_string($result)) {
                 $csv = Reader::createFromString($result);
                 $csv->setDelimiter("\t");
-                $headers = $csv->fetchOne();
+                $csv->setHeaderOffset(0);
+
+                $stmt = (new Statement())->offset(1);
+                $rows = $stmt->process($csv);
+                
                 $result = [];
-                foreach ($csv->setOffset(1)->fetchAll() as $row) {
-                    $result[] = array_combine($headers, $row);
+
+                foreach ($rows as $row) {
+                    $result[] = $row;
                 }
             }
 
