@@ -383,7 +383,6 @@ class MWSClient{
         'Unshipped', 'PartiallyShipped'
     ], $FulfillmentChannels = 'MFN', DateTime $till = null)
     {
-
         $query = [
             'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
         ];
