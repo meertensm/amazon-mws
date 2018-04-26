@@ -383,14 +383,14 @@ class MWSClient{
         'Unshipped', 'PartiallyShipped'
     ], $FulfillmentChannels = 'MFN', DateTime $till = null)
     {
-        if ($till == null) {
-          $till = new DateTime('now');
-        }
 
         $query = [
-            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp()),
-            'CreatedBefore' => gmdate(self::DATE_FORMAT, $till->getTimestamp())
+            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
         ];
+
+        if ($till !== null) {
+          $query['CreatedBefore'] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
+        }
 
         $counter = 1;
         foreach ($states as $status) {
