@@ -372,18 +372,24 @@ class MWSClient{
 
     /**
      * Returns orders created or updated during a time frame that you specify.
-     * @param object DateTime $from
+     * @param object DateTime $from, beginning of time frame
      * @param boolean $allMarketplaces, list orders from all marketplaces
      * @param array $states, an array containing orders states you want to filter on
      * @param string $FulfillmentChannel
+     * @param object DateTime $till, end of time frame
      * @return array
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
-    ], $FulfillmentChannels = 'MFN')
+    ], $FulfillmentChannels = 'MFN', DateTime $till = null)
     {
+        if ($till == null) {
+          $till = new DateTime('now');
+        }
+
         $query = [
-            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
+            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp()),
+            'CreatedBefore' => gmdate(self::DATE_FORMAT, $till->getTimestamp())
         ];
 
         $counter = 1;
