@@ -41,7 +41,7 @@ class MWSClient{
         'A1VC38T7YXB528' => 'mws.amazonservices.jp',
         'AAHKV2X7AFYLW' => 'mws.amazonservices.com.cn',
         'A39IBJ37TRP1C6' => 'mws.amazonservices.com.au',
-	'A2Q3Y263D00KWC' => 'mws.amazonservices.com'
+        'A2Q3Y263D00KWC' => 'mws.amazonservices.com'
     ];
 
     protected $debugNextFeed = false;
@@ -145,8 +145,8 @@ class MWSClient{
         return $array;
 
     }
-    
-        /**
+
+    /**
      * Returns the current competitive price of a product, based on SKU.
      * @param array [$sku_array = []]
      * @return array
@@ -373,6 +373,68 @@ class MWSClient{
     /**
      * Returns orders created or updated during a time frame that you specify.
      * @param object DateTime $from
+     * @param boolean $allMarketplaces , list orders from all marketplaces
+     * @param array $states , an array containing orders states you want to filter on
+     * @param string $FulfillmentChannels
+     * @return array
+     * @internal param string $FulfillmentChannel
+     */
+    public function ListOrdersByLastUpdate(DateTime $from, $allMarketplaces = false, $states = [
+        'All',
+    ], $FulfillmentChannels = 'All')
+    {
+        $query = [
+            'LastUpdatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
+        ];
+
+        $counter = 1;
+        foreach ($states as $status) {
+            $query['OrderStatus.Status.' . $counter] = $status;
+            $counter = $counter + 1;
+        }
+
+        if ($allMarketplaces == true) {
+            $counter = 1;
+            foreach($this->MarketplaceIds as $key => $value) {
+                $query['MarketplaceId.Id.' . $counter] = $key;
+                $counter = $counter + 1;
+            }
+        }
+
+        if(is_array($FulfillmentChannels)){
+            $counter = 1;
+            foreach ( $FulfillmentChannels as $fulfillmentChannel ) {
+                $query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
+                $counter = $counter + 1;
+            }
+        } else {
+            $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
+        }
+
+        $response = $this->request(
+            'ListOrders',
+            $query
+        );
+
+        if (isset($response['ListOrdersResult']['Orders']['Order'])) {
+            if(isset($response['ListOrdersResult']['NextToken'])){
+                $data['ListOrders'] = $response['ListOrdersResult']['Orders']['Order'];
+                $data['NextToken'] = $response['ListOrdersResult']['NextToken'];
+                return $data;
+            }
+            $response = $response['ListOrdersResult']['Orders']['Order'];
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                return [$response];
+            }
+            return $response;
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Returns orders created or updated during a time frame that you specify.
+     * @param object DateTime $from
      * @param boolean $allMarketplaces, list orders from all marketplaces
      * @param array $states, an array containing orders states you want to filter on
      * @param string $FulfillmentChannel
@@ -400,23 +462,23 @@ class MWSClient{
             }
         }
 
-	if(is_array($FulfillmentChannels)){
-	     $counter = 1;
-	     foreach ( $FulfillmentChannels as $fulfillmentChannel ) {
-		$query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
-		$counter = $counter + 1;
-	     }
+        if(is_array($FulfillmentChannels)){
+            $counter = 1;
+            foreach ( $FulfillmentChannels as $fulfillmentChannel ) {
+                $query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
+                $counter = $counter + 1;
+            }
         } else {
-	     $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
+            $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
         }
-	    
+
         $response = $this->request(
             'ListOrders',
             $query
         );
 
         if (isset($response['ListOrdersResult']['Orders']['Order'])) {
-	    if(isset($response['ListOrdersResult']['NextToken'])){
+            if(isset($response['ListOrdersResult']['NextToken'])){
                 $data['ListOrders'] = $response['ListOrdersResult']['Orders']['Order'];
                 $data['NextToken'] = $response['ListOrdersResult']['NextToken'];
                 return $data;
@@ -646,11 +708,11 @@ class MWSClient{
                         }
                         if (isset($product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'])) {
                             $array['Parentage'] = 'child';
-			    $array['Relationships'] = $product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'];
+                            $array['Relationships'] = $product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'];
                         }
-			if (isset($product['Relationships']['VariationChild'])) {
-		            $array['Parentage'] = 'parent';
-	                }
+                        if (isset($product['Relationships']['VariationChild'])) {
+                            $array['Parentage'] = 'parent';
+                        }
                         if (isset($product['SalesRankings']['SalesRank'])) {
                             $array['SalesRank'] = $product['SalesRankings']['SalesRank'];
                         }
@@ -963,8 +1025,8 @@ class MWSClient{
             return $feedContent;
         }
 
-	$purgeAndReplace = isset($options['PurgeAndReplace']) ? $options['PurgeAndReplace'] : false;
-	    
+        $purgeAndReplace = isset($options['PurgeAndReplace']) ? $options['PurgeAndReplace'] : false;
+
         $query = [
             'FeedType' => $FeedType,
             'PurgeAndReplace' => ($purgeAndReplace ? 'true' : 'false'),
@@ -1101,44 +1163,44 @@ class MWSClient{
         return false;
 
     }
-    
+
     /**
-	 * Get a list's inventory for Amazon's fulfillment
-	 *
-	 * @param array $sku_array
-	 *
-	 * @return array
-	 * @throws Exception
-	 */
+     * Get a list's inventory for Amazon's fulfillment
+     *
+     * @param array $sku_array
+     *
+     * @return array
+     * @throws Exception
+     */
     public function ListInventorySupply($sku_array = []){
-	
-	    if (count($sku_array) > 50) {
-		    throw new Exception('Maximum amount of SKU\'s for this call is 50');
-	    }
-	
-	    $counter = 1;
-	    $query = [
-		    'MarketplaceId' => $this->config['Marketplace_Id']
-	    ];
-	
-	    foreach($sku_array as $key){
-		    $query['SellerSkus.member.' . $counter] = $key;
-		    $counter++;
-	    }
-	
-	    $response = $this->request(
-		    'ListInventorySupply',
-		    $query
-	    );
-	
-	    $result = [];
-	    if (isset($response['ListInventorySupplyResult']['InventorySupplyList']['member'])) {
-		    foreach ($response['ListInventorySupplyResult']['InventorySupplyList']['member'] as $index => $ListInventorySupplyResult) {
-			    $result[$index] = $ListInventorySupplyResult;
-		    }
-	    }
-	    
-	    return $result;
+
+        if (count($sku_array) > 50) {
+            throw new Exception('Maximum amount of SKU\'s for this call is 50');
+        }
+
+        $counter = 1;
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id']
+        ];
+
+        foreach($sku_array as $key){
+            $query['SellerSkus.member.' . $counter] = $key;
+            $counter++;
+        }
+
+        $response = $this->request(
+            'ListInventorySupply',
+            $query
+        );
+
+        $result = [];
+        if (isset($response['ListInventorySupplyResult']['InventorySupplyList']['member'])) {
+            foreach ($response['ListInventorySupplyResult']['InventorySupplyList']['member'] as $index => $ListInventorySupplyResult) {
+                $result[$index] = $ListInventorySupplyResult;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -1219,7 +1281,7 @@ class MWSClient{
             );
 
             $requestOptions['query'] = $query;
-            
+
             if($this->client === NULL) {
                 $this->client = new Client();
             }
@@ -1257,7 +1319,7 @@ class MWSClient{
             throw new Exception($message);
         }
     }
-    
+
     public function setClient(Client $client) {
         $this->client = $client;
     }
