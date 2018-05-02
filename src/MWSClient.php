@@ -388,9 +388,11 @@ class MWSClient{
         ];
 
         $counter = 1;
-        foreach ($states as $status) {
-            $query['OrderStatus.Status.' . $counter] = $status;
-            $counter = $counter + 1;
+        if ($states != ['All']) {
+            foreach ($states as $status) {
+                $query['OrderStatus.Status.' . $counter] = $status;
+                $counter = $counter + 1;
+            }
         }
 
         if ($allMarketplaces == true) {
@@ -401,14 +403,16 @@ class MWSClient{
             }
         }
 
-        if(is_array($FulfillmentChannels)){
-            $counter = 1;
-            foreach ( $FulfillmentChannels as $fulfillmentChannel ) {
-                $query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
-                $counter = $counter + 1;
+        if ($FulfillmentChannels != "All") {
+            if(is_array($FulfillmentChannels)){
+                $counter = 1;
+                foreach ( $FulfillmentChannels as $fulfillmentChannel ) {
+                    $query['FulfillmentChannel.Channel.' . $counter] = $fulfillmentChannel;
+                    $counter = $counter + 1;
+                }
+            } else {
+                $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
             }
-        } else {
-            $query['FulfillmentChannel.Channel.1'] = $FulfillmentChannels;
         }
 
         $response = $this->request(
