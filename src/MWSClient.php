@@ -101,6 +101,46 @@ class MWSClient{
         }
     }
 
+    public function ListFinancialEvents(
+        DateTime $postedAfter = null,
+        DateTime $postedBefore = null,
+        string $financialEventGroupId = null,
+        string $amazonOrderID = null,
+        int $maxResultsPerPage = 100
+    ) {
+        $query = [];
+
+        if (! is_null($postedAfter)) {
+            $query['PostedAfter'] = gmdate(self::DATE_FORMAT, $postedAfter->getTimestamp());
+        }
+        if (! is_null($postedBefore)) {
+            $query['PostedBefore'] = gmdate(self::DATE_FORMAT, $postedBefore->getTimestamp());
+        }
+        if (! is_null($financialEventGroupId)) {
+            $query['FinancialEventGroupId'] = $financialEventGroupId;
+        }
+        if (! is_null($amazonOrderID)) {
+            $query['AmazonOrderId'] = $amazonOrderID;
+        }
+        $query['MaxResultsPerPage'] = $maxResultsPerPage;
+
+        $response = $this->request(
+            'ListFinancialEvents',
+            $query
+        );
+
+        if (isset($response['ListFinancialEventsResult']['FinancialEvents'])) {
+            $response = $response['ListFinancialEventsResult']['FinancialEvents'];
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                $response = [$response];
+            }
+        } else {
+            return [];
+        }
+
+        return $response;
+    }
+
     /**
      * Returns the current competitive price of a product, based on ASIN.
      * @param array [$asin_array = []]
