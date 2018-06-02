@@ -783,7 +783,32 @@ class MWSClient{
         }
     }
 
-    /**
+	/**
+	 * Delete product's based on SKU
+	 * @param string $array array containing sku's
+	 * @return array feed submission result
+	 */
+	public function deleteProductBySKU(array $array) {
+
+		$feed = [
+			'MessageType' => 'Product',
+			'Message' => []
+		];
+
+		foreach ($array as $sku) {
+			$feed['Message'][] = [
+				'MessageID' => rand(),
+				'OperationType' => 'Delete',
+				'Product' => [
+					'SKU' => $sku
+				]
+			];
+		}
+
+		return $this->SubmitFeed('_POST_PRODUCT_DATA_', $feed);
+	}
+
+	/**
      * Update a product's stock quantity
      * @param array $array array containing sku as key and quantity as value
      * @return array feed submission result
