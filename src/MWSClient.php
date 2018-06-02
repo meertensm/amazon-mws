@@ -129,8 +129,30 @@ class MWSClient{
             $query
         );
 
-        if (isset($response['ListFinancialEventsResult']['FinancialEvents'])) {
-            $response = $response['ListFinancialEventsResult']['FinancialEvents'];
+        if (isset($response['ListFinancialEventsResult'])) {
+            $response = $response['ListFinancialEventsResult'];
+            if (array_keys($response) !== range(0, count($response) - 1)) {
+                $response = [$response];
+            }
+        } else {
+            return [];
+        }
+
+        return $response;
+    }
+
+    public function ListFinancialEventsByNextToken(string $nextToken) {
+        $query = [
+            'NextToken' => $nextToken
+        ];
+
+        $response = $this->request(
+            'ListFinancialEventsByNextToken',
+            $query
+        );
+
+        if (isset($response['ListFinancialEventsByNextTokenResult'])) {
+            $response = $response['ListFinancialEventsByNextTokenResult'];
             if (array_keys($response) !== range(0, count($response) - 1)) {
                 $response = [$response];
             }
