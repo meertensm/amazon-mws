@@ -163,6 +163,9 @@ $client->ListInventorySupply($sku_array = []);
 // Returns a list of marketplaces that the seller submitting the request can sell in, and a list of participations that include seller-specific information in that marketplace
 $client->ListMarketplaceParticipations();
 
+// Delete product's based on SKU
+$client->deleteProcutbySKU($sku_array = []);
+
 // Returns order items based on the AmazonOrderId that you specify.
 $client->ListOrderItems($AmazonOrderId);
 
