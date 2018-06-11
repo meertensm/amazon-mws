@@ -965,6 +965,20 @@ class MWSClient{
             return $result;
         }
     }
+    /**
+     * Returns a list of all feed submissions submitted in the previous 90 days.
+     * @return array
+     */
+    public function GetFeedSubmissionList()
+    {
+        $result = $this->request('GetFeedSubmissionList');
+
+        if (isset($result['Message']['ProcessingReport'])) {
+            return $result['Message']['ProcessingReport'];
+        } else {
+            return $result;
+        }
+    }
 
     /**
      * Uploads a feed for processing by Amazon MWS.
