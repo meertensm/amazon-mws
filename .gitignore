@@ -5,3 +5,5 @@ xsd/
 documentor.php
 test.csv
 .idea/
+/composer.phar
+/composer.lock
