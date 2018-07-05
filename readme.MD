@@ -192,4 +192,7 @@ $client->updateStock($array);
 
 // A method to quickly check if the supplied credentials are valid
 $client->validateCredentials();
+
+// Delete product's based on SKU
+$client->deleteProductBySKU(['sku1', 'sku2']);
 ```
