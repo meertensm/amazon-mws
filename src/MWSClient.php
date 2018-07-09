@@ -1046,6 +1046,45 @@ class MWSClient{
     }
 
     /**
+     * Post to update shipping information for an order (_POST_FLAT_FILE_FULFILLMENT_DATA_)
+     * @param $products
+     * @return array
+     */
+    public function updateShippingInformation($products) {
+
+        if (!is_array($products)) {
+            $products = [$products];
+        }
+
+        $csv = Writer::createFromFileObject(new SplTempFileObject());
+
+        $csv->setDelimiter("\t");
+        $csv->setInputEncoding('iso-8859-1');
+
+        $header = [
+            'order-id',
+            'order-item-id',
+            'quantity',
+            'ship-date',
+            'carrier-code',
+            'carrier-name',
+            'tracking-number',
+            'ship-method',
+        ];
+
+        $csv->insertOne($header);
+
+        foreach ($products as $product) {
+            $csv->insertOne(
+                array_values($product->toArray())
+            );
+        }
+
+        return $this->SubmitFeed('_POST_FLAT_FILE_FULFILLMENT_DATA_', $csv);
+
+    }
+
+    /**
      * Returns the feed processing report and the Content-MD5 header.
      * @param string $FeedSubmissionId
      * @return array
