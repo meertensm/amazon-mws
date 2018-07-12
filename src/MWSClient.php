@@ -1173,7 +1173,119 @@ class MWSClient{
     }
 
     /**
+     * Returns financial events for a given order by it's id
+     *
+     * @param string $AmazonOrderId
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function ListFinancialEventsByOrderId($AmazonOrderId)
+    {
+        $query = ['AmazonOrderId' => $AmazonOrderId];
+        $response = $this->request('ListFinancialEvents', $query);
+
+        return $this->processListFinancialEventsResponse($response);
+    }
+
+    /**
+     * Returns financial events for a given financial event group id
+     *
+     * @param $groupId
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function ListFinancialEventsByEventGroupId($groupId)
+    {
+        $query = ['FinancialEventGroupId' => $groupId];
+        $response = $this->request('ListFinancialEvents', $query);
+
+        return $this->processListFinancialEventsResponse($response);
+    }
+
+    /**
+     * Returns financial events for a given financial events date range
+     *
+     * @param DateTime $from
+     * @param DateTime|null $till
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function ListFinancialEventsByDateRange(DateTime $from, DateTime $till = null)
+    {
+        $query = [
+            'PostedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
+        ];
+
+        if (!is_null($till)) {
+            $query['PostedBefore'] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
+        }
+
+        $response = $this->request('ListFinancialEvents', $query);
+
+        return $this->processListFinancialEventsResponse($response);
+    }
+
+    /**
+     * Processes list financial events response
+     *
+     * @param array $response
+     * @param string $fieldName
+     *
+     * @return array
+     */
+    protected function processListFinancialEventsResponse($response, $fieldName = 'ListFinancialEventsResult')
+    {
+        if (!isset($response[$fieldName]['FinancialEvents'])) return [];
+
+        $data = $response[$fieldName]['FinancialEvents'];
+
+        // We remove empty lists
+        $data = array_filter($data, function($item) {
+            return count($item) > 0;
+        });
+
+        if (isset($response[$fieldName]['NextToken'])) {
+            // Remove ==, I've seen cases when Amazon servers fails otherwise
+            $data['ListFinancialEvents'] = $data;
+            $data['NextToken'] = rtrim($response[$fieldName]['NextToken'], '=');
+
+            return $data;
+        }
+
+        return ['ListFinancialEvents' => $data];
+    }
+
+    /**
+     * Returns the next page of financial events using the NextToken parameter
+     *
+     * @param string $nextToken
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function ListFinancialEventsByNextToken($nextToken)
+    {
+        $query = [
+            'NextToken' => $nextToken,
+        ];
+
+        $response = $this->request(
+            'ListFinancialEventsByNextToken',
+            $query
+        );
+
+        return $this->processListFinancialEventsResponse($response, 'ListFinancialEventsByNextTokenResult');
+    }
+
+    /**
      * Request MWS
+     *
+     * @return string|array
+     * @throws Exception
      */
     private function request($endPoint, array $query = [], $body = null, $raw = false)
     {

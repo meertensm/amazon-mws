@@ -192,4 +192,16 @@ $client->updateStock($array);
 
 // A method to quickly check if the supplied credentials are valid
 $client->validateCredentials();
+
+// Financial events for a given order
+$client->ListFinancialEventsByOrderId($AmazonOrderId);
+
+// Financial events for a given financial event group id
+$client->ListFinancialEventsByEventGroupId($groupId);
+
+// Financial events for a given financial events date range
+$client->ListFinancialEventsByDateRange($from, $to);
+
+// Returns the next page of financial events using
+$client->ListFinancialEventsByNextToken($nextToken);
 ```
