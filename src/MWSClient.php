@@ -4,6 +4,7 @@ namespace MCS;
 use DateTime;
 use Exception;
 use DateTimeZone;
+use MCS\Exceptions\RequestThrottled;
 use MCS\MWSEndPoint;
 use League\Csv\Reader;
 use League\Csv\Writer;
@@ -1417,6 +1418,10 @@ class MWSClient{
                 if (strpos($message, '<ErrorResponse') !== false) {
                     $error = simplexml_load_string($message);
                     $message = $error->Error->Message;
+                }
+
+                if ($message == 'Request is throttled') {
+                    throw new RequestThrottled;
                 }
             } else {
                 $message = 'An error occured';
