@@ -1173,6 +1173,68 @@ class MWSClient{
     }
 
     /**
+	 * Get eligible shipping services
+	 *
+	 * @param array $shipmentRequestDetails
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+    public function GetEligibleShippingServices($shipmentRequestDetails = []) 
+    {
+	    $query = [
+		    'MarketplaceId' => $this->config['Marketplace_Id']
+	    ];
+	
+	    $query += $shipmentRequestDetails;
+	
+	    $response = $this->request(
+		    'GetEligibleShippingServices',
+		    $query
+	    );
+	
+	    $result = [];
+	    if (isset($response['GetEligibleShippingServicesResult']['ShippingServiceList'])) {
+		    foreach ($response['GetEligibleShippingServicesResult']['ShippingServiceList'] as $ShippingService) {
+                $result[$ShippingService['CarrierName']] = [
+                    'ShippingServiceId' => $ShippingService['ShippingServiceId'],
+                    'ShippingServiceOfferId' => $ShippingService['ShippingServiceOfferId'],
+                ];
+		    }
+	    }
+	    
+	    return $result;
+    }
+
+    /**
+	 * create shipment
+	 *
+	 * @param array $shipmentRequestDetails
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+    public function CreateShipment($shipmentRequestDetails = [])
+    {    
+	    $query = [
+		    'MarketplaceId' => $this->config['Marketplace_Id']
+	    ];
+	
+	    $query += $shipmentRequestDetails;
+	
+	    $response = $this->request(
+		    'CreateShipment',
+		    $query
+	    );
+	
+	    if (isset($response['CreateShipmentResult']['Shipment'])) {
+		    return $response['CreateShipmentResult']['Shipment'];
+	    }
+	    
+	    return [];
+    }
+
+    /**
      * Request MWS
      */
     private function request($endPoint, array $query = [], $body = null, $raw = false)
