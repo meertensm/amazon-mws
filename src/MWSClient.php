@@ -1195,12 +1195,7 @@ class MWSClient{
 	
 	    $result = [];
 	    if (isset($response['GetEligibleShippingServicesResult']['ShippingServiceList'])) {
-		    foreach ($response['GetEligibleShippingServicesResult']['ShippingServiceList'] as $ShippingService) {
-                $result[$ShippingService['CarrierName']] = [
-                    'ShippingServiceId' => $ShippingService['ShippingServiceId'],
-                    'ShippingServiceOfferId' => $ShippingService['ShippingServiceOfferId'],
-                ];
-		    }
+		    return $response['GetEligibleShippingServicesResult']['ShippingServiceList'];
 	    }
 	    
 	    return $result;
