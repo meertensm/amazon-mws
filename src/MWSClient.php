@@ -439,15 +439,17 @@ class MWSClient{
      * @param boolean $allMarketplaces , list orders from all marketplaces
      * @param array $states , an array containing orders states you want to filter on
      * @param string $FulfillmentChannels
+     * @param int $MaxResultsPerPage
      * @return array
      * @internal param string $FulfillmentChannel
      */
     public function ListOrdersByLastUpdate(DateTime $from, $allMarketplaces = false, $states = [
         'All',
-    ], $FulfillmentChannels = 'All')
+    ], $FulfillmentChannels = 'All', $MaxResultsPerPage = 100)
     {
         $query = [
-            'LastUpdatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
+            'LastUpdatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp()),
+            'MaxResultsPerPage' => $MaxResultsPerPage,
         ];
 
         $counter = 1;
