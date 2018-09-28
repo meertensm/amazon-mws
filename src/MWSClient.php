@@ -1314,7 +1314,7 @@ class MWSClient{
     /**
      * Request MWS
      */
-    private function request($endPoint, array $query = [], $body = null, $raw = false)
+    public function request($endPoint, array $query = [], $body = null, $raw = false)
     {
 
         $endPoint = MWSEndPoint::get($endPoint);
