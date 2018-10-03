@@ -1173,6 +1173,41 @@ class MWSClient{
     }
 
     /**
+     * Get FBA Fees Estimation
+     *
+     * @param string $idType 
+     * @param string $id
+     * @param float $price
+     * @param string $currencyCode
+     * @param boolean $isAmazonFulfilled
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function GetMyFeesEstimate($idType, $id, $price, $currencyCode, $isAmazonFulfilled)
+    {
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id']
+        ];
+
+        $query['FeesEstimateRequestList.FeesEstimateRequest.1.MarketplaceId'] = $this->config['Marketplace_Id'];
+        $query['FeesEstimateRequestList.FeesEstimateRequest.1.IdType'] = $idType;
+        $query['FeesEstimateRequestList.FeesEstimateRequest.1.IdValue'] = $id;
+        $query['FeesEstimateRequestList.FeesEstimateRequest.1.PriceToEstimateFees.ListingPrice.Amount'] = floatval($price);
+        $query['FeesEstimateRequestList.FeesEstimateRequest.1.PriceToEstimateFees.ListingPrice.CurrencyCode'] = $currencyCode;
+        $query['FeesEstimateRequestList.FeesEstimateRequest.1.Identifier'] = gmdate(self::DATE_FORMAT, time());
+        $query['FeesEstimateRequestList.FeesEstimateRequest.1.IsAmazonFulfilled'] = $isAmazonFulfilled;
+
+        $response = $this->request(
+            'GetMyFeesEstimate',
+            $query
+
+        );
+
+        return $response;
+    }
+
+    /**
      * Request MWS
      */
     private function request($endPoint, array $query = [], $body = null, $raw = false)
