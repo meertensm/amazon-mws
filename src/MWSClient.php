@@ -945,6 +945,14 @@ class MWSClient{
 
     }
 
+
+    public function GetFeedSubmissionList()
+    {
+        return $this->request(
+            'GetFeedSubmissionList'
+        );
+    }
+
     /**
      * Returns the feed processing report and the Content-MD5 header.
      * @param string $FeedSubmissionId
