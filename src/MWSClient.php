@@ -920,7 +920,6 @@ class MWSClient{
         $csv = Writer::createFromFileObject(new SplTempFileObject());
 
         $csv->setDelimiter("\t");
-        $csv->setInputEncoding('iso-8859-1');
 
         $csv->insertOne(['TemplateType=Offer', 'Version=2014.0703']);
 
@@ -1261,10 +1260,7 @@ class MWSClient{
                 $requestOptions
             );
 
-
-
             $body = (string) $response->getBody();
-
 
             if ($raw) {
                 return $body;
