@@ -54,6 +54,12 @@ class MWSEndPoint{
             'path' => '/',
             'date' => '2009-01-01'
         ],
+        'GetFeedSubmissionList' => [
+            'method' => 'GET',
+            'action' => 'GetFeedSubmissionList',
+            'path' => '/',
+            'date' => '2009-01-01'
+        ],
         'GetReportList' => [
             'method' => 'POST',
             'action' => 'GetReportList',
