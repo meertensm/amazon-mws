@@ -1172,6 +1172,45 @@ class MWSClient{
 	    return $result;
     }
 
+     /**
+     * Get Financial Events
+     *
+     * @param DateTime [$StartDate = null]
+     * @param EndDate [$EndDate = null]
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getFinancialEvents($StartDate = null, $EndDate = null){
+        $query = [
+
+        ];
+
+        if (!is_null($StartDate)) {
+            if (!is_a($StartDate, 'DateTime')) {
+                throw new Exception('StartDate should be a DateTime object');
+            } else {
+                $query['PostedAfter'] = gmdate(self::DATE_FORMAT, $StartDate->getTimestamp());
+            }
+        }
+
+        if (!is_null($EndDate)) {
+            if (!is_a($EndDate, 'DateTime')) {
+                throw new Exception('EndDate should be a DateTime object');
+            } else {
+                $query['PostedBefore'] = gmdate(self::DATE_FORMAT, $EndDate->getTimestamp());
+            }
+        }
+
+        $response = $this->request(
+            'ListFinancialEvents',
+            $query
+
+        );
+
+        return $response;
+    }
+
     /**
      * Request MWS
      */

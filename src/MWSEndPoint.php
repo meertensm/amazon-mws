@@ -145,7 +145,14 @@ class MWSEndPoint{
             'action' => 'GetLowestPricedOffersForASIN',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
-        ]
+        ],
+        'ListFinancialEvents'=> [
+            'method' => 'POST',
+            'action' => 'ListFinancialEvents',
+            'path' => '/Finances/2015-05-01',
+            'date' => '2015-05-01'
+
+        ],
     ];
 
     public static function get($key)
