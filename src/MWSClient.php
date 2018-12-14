@@ -1147,7 +1147,7 @@ class MWSClient{
         $counter = 1;
         $query = [
             'MarketplaceId' => $this->config['Marketplace_Id'],
-            'QueryStartDateTime' => $date,
+            'QueryStartDateTime' => gmdate(self::DATE_FORMAT, $date->getTimestamp()),
         ];
 
 
