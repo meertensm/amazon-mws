@@ -1,5 +1,5 @@
 {
-    "name": "kingcoen/amazon-mws",
+    "name": "mcs/amazon-mws",
     "description": "Library to interface with Amazon MWS",
     "license": "MIT",
     "keywords": ["amazon", "mws"],
