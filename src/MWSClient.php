@@ -1132,7 +1132,41 @@ class MWSClient{
         return false;
 
     }
-    
+    /**
+     * Get a list's inventory for Amazon's fulfillment
+     *
+     * @param array $sku_array
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function ListInventorySupplyByDate($date){
+
+
+
+        $counter = 1;
+        $query = [
+            'MarketplaceId' => $this->config['Marketplace_Id'],
+            'QueryStartDateTime' => Carbon::parse($date)->toIso8601String(),
+        ];
+
+
+
+        $response = $this->request(
+            'ListInventorySupply',
+            $query
+        );
+
+        $result = [];
+        if (isset($response['ListInventorySupplyResult']['InventorySupplyList']['member'])) {
+            foreach ($response['ListInventorySupplyResult']['InventorySupplyList']['member'] as $index => $ListInventorySupplyResult) {
+                $result[$index] = $ListInventorySupplyResult;
+            }
+        }
+
+        return $result;
+    }
+
     /**
 	 * Get a list's inventory for Amazon's fulfillment
 	 *
