@@ -2,7 +2,6 @@
 namespace MCS;
 
 use DateTime;
-use Carbon\Carbon;
 use Exception;
 use DateTimeZone;
 use MCS\MWSEndPoint;
@@ -1141,14 +1140,14 @@ class MWSClient{
      * @return array
      * @throws Exception
      */
-    public function ListInventorySupplyByDate($date){
+    public function ListInventorySupplyByDate(DateTime $date){
 
 
 
         $counter = 1;
         $query = [
             'MarketplaceId' => $this->config['Marketplace_Id'],
-            'QueryStartDateTime' => Carbon::parse($date)->toIso8601String(),
+            'QueryStartDateTime' => $date,
         ];
 
 
