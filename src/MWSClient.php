@@ -1181,25 +1181,21 @@ class MWSClient{
      * @return array
      * @throws Exception
      */
-    public function getFinancialEvents($StartDate = null, $EndDate = null){
+    public function getFinancialEvents(DateTime $StartDate = null, DateTime $EndDate = null, $AmazonOrderId = null){
         $query = [
 
         ];
 
         if (!is_null($StartDate)) {
-            if (!is_a($StartDate, 'DateTime')) {
-                throw new Exception('StartDate should be a DateTime object');
-            } else {
-                $query['PostedAfter'] = gmdate(self::DATE_FORMAT, $StartDate->getTimestamp());
-            }
+            $query['PostedAfter'] = gmdate(self::DATE_FORMAT, $StartDate->getTimestamp());
         }
 
         if (!is_null($EndDate)) {
-            if (!is_a($EndDate, 'DateTime')) {
-                throw new Exception('EndDate should be a DateTime object');
-            } else {
-                $query['PostedBefore'] = gmdate(self::DATE_FORMAT, $EndDate->getTimestamp());
-            }
+            $query['PostedBefore'] = gmdate(self::DATE_FORMAT, $EndDate->getTimestamp());
+        }
+
+        if (!is_null($AmazonOrderId)) {
+            $query['AmazonOrderId'] = $AmazonOrderId;
         }
 
         $response = $this->request(
