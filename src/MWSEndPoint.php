@@ -60,6 +60,12 @@ class MWSEndPoint{
             'path' => '/',
             'date' => '2009-01-01'
         ],
+        'GetReportListByNextToken' => [
+            'method' => 'POST',
+            'action' => 'GetReportListByNextToken',
+            'path' => '/',
+            'date' => '2009-01-01'
+        ],
         'GetReportRequestList' => [
             'method' => 'POST',
             'action' => 'GetReportRequestList',
