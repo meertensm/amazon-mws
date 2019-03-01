@@ -1308,7 +1308,7 @@ class MWSClient{
                 $counter++;
             }
         }
-        $array['Action'] = 'GetReportRequestList';
+
         $array['MaxCount'] = $limit;
 
         return $this->request('GetReportRequestList', $array);
@@ -1330,13 +1330,13 @@ class MWSClient{
                 $counter++;
             }
         }
-        $array['Action'] = 'GetReportListByNextToken';
+
         if ($nextToken != null){
             $array['NextToken'] = $nextToken;
         }
         $array['MaxCount'] = $limit;
 
-        return $this->request('GetReportList', $array);
+        return $this->request('GetReportListByNextToken', $array);
     }
 
 }
