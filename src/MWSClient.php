@@ -1292,4 +1292,51 @@ class MWSClient{
     public function setClient(Client $client) {
         $this->client = $client;
     }
+
+    /**
+     * @param array $ReportTypeList
+     * @param $limit
+     * @return array
+     */
+    public function GetReportRequestList($ReportTypeList = null, $limit=null)
+    {
+        $array = [];
+        $counter = 1;
+        if (count($ReportTypeList)) {
+            foreach($ReportTypeList as $ReportType) {
+                $array['ReportTypeList.Type.' . $counter] = $ReportType;
+                $counter++;
+            }
+        }
+        $array['Action'] = 'GetReportRequestList';
+        $array['MaxCount'] = $limit;
+
+        return $this->request('GetReportRequestList', $array);
+    }
+
+    /**
+     * @param array $ReportTypeList
+     * @param $nextToken
+     * @param $limit
+     * @return array
+     */
+    public function GetReportListByNextToken($ReportTypeList=[], $nextToken=null, $limit=null)
+    {
+        $array = [];
+        $counter = 1;
+        if (count($ReportTypeList)) {
+            foreach($ReportTypeList as $ReportType) {
+                $array['ReportTypeList.Type.' . $counter] = $ReportType;
+                $counter++;
+            }
+        }
+        $array['Action'] = 'GetReportListByNextToken';
+        if ($nextToken != null){
+            $array['NextToken'] = $nextToken;
+        }
+        $array['MaxCount'] = $limit;
+
+        return $this->request('GetReportList', $array);
+    }
+
 }
