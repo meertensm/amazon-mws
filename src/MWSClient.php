@@ -19,7 +19,7 @@ class MWSClient{
     const DATE_FORMAT = "Y-m-d\TH:i:s.\\0\\0\\0\\Z";
     const APPLICATION_NAME = 'MCS/MwsClient';
 
-    private $config = [
+    protected $config = [
         'Seller_Id' => null,
         'Marketplace_Id' => null,
         'Access_Key_ID' => null,
@@ -28,7 +28,7 @@ class MWSClient{
         'Application_Version' => '0.0.*'
     ];
 
-    private $MarketplaceIds = [
+    protected $MarketplaceIds = [
         'A2EUQ1WTGCTBG2' => 'mws.amazonservices.ca',
         'ATVPDKIKX0DER' => 'mws.amazonservices.com',
         'A1AM78C64UM0Y8' => 'mws.amazonservices.com.mx',
@@ -145,7 +145,7 @@ class MWSClient{
         return $array;
 
     }
-    
+
         /**
      * Returns the current competitive price of a product, based on SKU.
      * @param array [$sku_array = []]
@@ -423,15 +423,15 @@ class MWSClient{
                 $data['NextToken'] = $response['ListOrdersResult']['NextToken'];
                 return $data;
             }
-        
+
             $response = $response['ListOrdersResult']['Orders']['Order'];
-        
+
             if (array_keys($response) !== range(0, count($response) - 1)) {
                 return [$response];
             }
-        
+
             return $response;
-        
+
         } else {
             return [];
         }
@@ -995,7 +995,7 @@ class MWSClient{
         }
 
 	$purgeAndReplace = isset($options['PurgeAndReplace']) ? $options['PurgeAndReplace'] : false;
-	    
+
         $query = [
             'FeedType' => $FeedType,
             'PurgeAndReplace' => ($purgeAndReplace ? 'true' : 'false'),
@@ -1023,7 +1023,7 @@ class MWSClient{
      * @param $customRoot [$customRoot = 'AmazonEnvelope']
      * @return sting
      */
-    private function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
+    protected function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
     {
         return ArrayToXml::convert($array, $customRoot);
     }
@@ -1033,7 +1033,7 @@ class MWSClient{
      * @param string $xmlstring
      * @return array
      */
-    private function xmlToArray($xmlstring)
+    protected function xmlToArray($xmlstring)
     {
         return json_decode(json_encode(simplexml_load_string($xmlstring)), true);
     }
@@ -1132,7 +1132,7 @@ class MWSClient{
         return false;
 
     }
-    
+
     /**
 	 * Get a list's inventory for Amazon's fulfillment
 	 *
@@ -1142,40 +1142,40 @@ class MWSClient{
 	 * @throws Exception
 	 */
     public function ListInventorySupply($sku_array = []){
-	
+
 	    if (count($sku_array) > 50) {
 		    throw new Exception('Maximum amount of SKU\'s for this call is 50');
 	    }
-	
+
 	    $counter = 1;
 	    $query = [
 		    'MarketplaceId' => $this->config['Marketplace_Id']
 	    ];
-	
+
 	    foreach($sku_array as $key){
 		    $query['SellerSkus.member.' . $counter] = $key;
 		    $counter++;
 	    }
-	
+
 	    $response = $this->request(
 		    'ListInventorySupply',
 		    $query
 	    );
-	
+
 	    $result = [];
 	    if (isset($response['ListInventorySupplyResult']['InventorySupplyList']['member'])) {
 		    foreach ($response['ListInventorySupplyResult']['InventorySupplyList']['member'] as $index => $ListInventorySupplyResult) {
 			    $result[$index] = $ListInventorySupplyResult;
 		    }
 	    }
-	    
+
 	    return $result;
     }
 
     /**
      * Request MWS
      */
-    private function request($endPoint, array $query = [], $body = null, $raw = false)
+    protected function request($endPoint, array $query = [], $body = null, $raw = false)
     {
 
         $endPoint = MWSEndPoint::get($endPoint);
@@ -1250,7 +1250,7 @@ class MWSClient{
             );
 
             $requestOptions['query'] = $query;
-            
+
             if($this->client === NULL) {
                 $this->client = new Client();
             }
@@ -1288,7 +1288,7 @@ class MWSClient{
             throw new Exception($message);
         }
     }
-    
+
     public function setClient(Client $client) {
         $this->client = $client;
     }
