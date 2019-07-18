@@ -1,27 +1,33 @@
 {
-    "name": "mcs/amazon-mws",
-    "description": "Library to interface with Amazon MWS",
-    "license": "MIT",
-    "keywords": ["amazon", "mws"],
-    "minimum-stability": "dev",
-    "authors": [
-        {
-            "name": "Michiel Meertens",
-            "email": "meertensmichiel28@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">= 5.4",
-        "guzzlehttp/guzzle": "~6.0",
-        "spatie/array-to-xml": "^2.1",
-        "league/csv": "^8.1"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^7"
-    },
-    "autoload": {
-        "psr-4": {
-            "MCS\\": "src"
-        }
+  "name": "mcs/amazon-mws",
+  "description": "Library to interface with Amazon MWS",
+  "license": "MIT",
+  "keywords": [
+    "amazon",
+    "mws"
+  ],
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Michiel Meertens",
+      "email": "meertensmichiel28@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">= 5.4",
+    "ext-mbstring": "*",
+    "ext-json": "*",
+    "ext-simplexml": "*",
+    "guzzlehttp/guzzle": "~6.0",
+    "spatie/array-to-xml": "^2.1",
+    "league/csv": "^9"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7"
+  },
+  "autoload": {
+    "psr-4": {
+      "MCS\\": "src"
+    }
+  }
 }
