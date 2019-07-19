@@ -81,6 +81,7 @@ class MWSClient
     /**
      * A method to quickly check if the supplied credentials are valid
      * @return boolean
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function validateCredentials()
     {
@@ -100,6 +101,7 @@ class MWSClient
      * @param array [$asin_array = []]
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetCompetitivePricingForASIN($asin_array = [])
     {
@@ -140,6 +142,7 @@ class MWSClient
      * @param array [$sku_array = []]
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetCompetitivePricingForSKU($sku_array = [])
     {
@@ -182,6 +185,7 @@ class MWSClient
      * @param string [$ItemCondition = 'New'] Should be one in: New, Used, Collectible, Refurbished, Club
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetLowestPricedOffersForASIN($asin, $ItemCondition = 'New')
     {
@@ -199,6 +203,7 @@ class MWSClient
      * @param string [$ItemCondition = null]
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetMyPriceForSKU($sku_array = [], $ItemCondition = null)
     {
@@ -249,6 +254,7 @@ class MWSClient
      * @param string [$ItemCondition = null]
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetMyPriceForASIN($asin_array = [], $ItemCondition = null)
     {
@@ -295,6 +301,7 @@ class MWSClient
      * @param array [$ItemCondition = null] Should be one in: New, Used, Collectible, Refurbished, Club. Default: All
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetLowestOfferListingsForASIN($asin_array = [], $ItemCondition = null)
     {
@@ -344,6 +351,7 @@ class MWSClient
      * @param DateTime|null $till
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function ListOrders(
         DateTime $from,
@@ -408,6 +416,7 @@ class MWSClient
      * @param string $nextToken
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function ListOrdersByNextToken($nextToken)
     {
@@ -439,6 +448,7 @@ class MWSClient
      * @param string $AmazonOrderId
      * @return bool if the order is found, false if not
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetOrder($AmazonOrderId)
     {
@@ -457,6 +467,7 @@ class MWSClient
      * @param string $AmazonOrderId
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function ListOrderItems($AmazonOrderId)
     {
@@ -476,6 +487,7 @@ class MWSClient
      * @param string $SellerSKU
      * @return bool if found, false if not found
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetProductCategoriesForSKU($SellerSKU)
     {
@@ -495,6 +507,7 @@ class MWSClient
      * @param string $ASIN
      * @return bool if found, false if not found
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetProductCategoriesForASIN($ASIN)
     {
@@ -515,6 +528,7 @@ class MWSClient
      * @param string [$type = 'ASIN']  the identifier name
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetMatchingProductForId(array $asin_array, $type = 'ASIN')
     {
@@ -627,6 +641,7 @@ class MWSClient
      * @param string [$query_context_id = null] the identifier for the context within which the given search will be performed. see: http://docs.developer.amazonservices.com/en_US/products/Products_QueryContextIDs.html
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function ListMatchingProducts($query, $query_context_id = null)
     {
@@ -672,6 +687,7 @@ class MWSClient
      * @param array [$ReportTypeList = []]
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetReportList($ReportTypeList = [])
     {
@@ -691,6 +707,7 @@ class MWSClient
      * @param string [$RecommendationCategory = null] One of: Inventory, Selection, Pricing, Fulfillment, ListingQuality, GlobalSelling, Advertising
      * @return array/false if no result
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function ListRecommendations($RecommendationCategory = null)
     {
@@ -712,6 +729,7 @@ class MWSClient
      * Returns a list of marketplaces that the seller submitting the request can sell in, and a list of participations that include seller-specific information in that marketplace
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function ListMarketplaceParticipations()
     {
@@ -728,6 +746,7 @@ class MWSClient
      * @param array $array array containing sku's
      * @return array feed submission result
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function deleteProductBySKU(array $array)
     {
@@ -752,6 +771,7 @@ class MWSClient
      * @param array $array array containing sku as key and quantity as value
      * @return array feed submission result
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateStock(array $array)
     {
@@ -778,6 +798,7 @@ class MWSClient
      * @param array $array array containing arrays with next keys: [sku, quantity, latency]
      * @return array feed submission result
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateStockWithFulfillmentLatency(array $array)
     {
@@ -805,6 +826,7 @@ class MWSClient
      * @param array|null $saleprice
      * @return array feed submission result
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updatePrice(array $standardprice, array $saleprice = null)
     {
@@ -847,6 +869,7 @@ class MWSClient
      * @param string $FeedSubmissionId
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetFeedSubmissionResult($FeedSubmissionId)
     {
@@ -867,6 +890,7 @@ class MWSClient
      * @param boolean $debug Return the generated xml and don't send it to amazon
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function SubmitFeed($FeedType, $feedContent, $debug = false, $options = [])
     {
@@ -937,6 +961,7 @@ class MWSClient
      * @param DateTime [$EndDate = null]
      * @return string ReportRequestId
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function RequestReport($report, $StartDate = null, $EndDate = null)
     {
@@ -972,8 +997,9 @@ class MWSClient
     /**
      * Get a report's content
      * @param string $ReportId
-     * @return array on succes
+     * @return array|bool on succes
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetReport($ReportId)
     {
@@ -1007,6 +1033,7 @@ class MWSClient
      * @param string $ReportId
      * @return bool if the report is found
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function GetReportRequestStatus($ReportId)
     {
@@ -1026,6 +1053,7 @@ class MWSClient
      *
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function ListInventorySupply($sku_array = [])
     {
@@ -1064,6 +1092,7 @@ class MWSClient
      * @param array $data required data
      * @return array feed submission result
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function setDeliveryState(array $data)
     {
@@ -1106,7 +1135,7 @@ class MWSClient
         if (sizeof($fulfillmentData) > 0) {
             $feed["Message"]["OrderFulfillment"]["FulfillmentData"] = $fulfillmentData;
         }
-        $feed = $this->SubmitFeed(FeedRecord::FEED_TYPE_SHIPPING, $feed);
+        $feed = $this->SubmitFeed('_POST_ORDER_FULFILLMENT_DATA_', $feed);
 
         return $feed;
     }
@@ -1117,24 +1146,23 @@ class MWSClient
      * @param string $template
      * @param null $version
      * @param null $signature
-     * @param string $encoding
      * @return array
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function postProduct(
-        $MWSProduct,
-        $template = 'Custom',
-        $version = null,
-        $signature = null,
-        $encoding = 'iso-8859-16'
-    ) {
+    public function postProduct($MWSProduct, $template = 'Custom', $version = null, $signature = null)
+    {
         if (!is_array($MWSProduct)) {
             $MWSProduct = [$MWSProduct];
         }
+
+        $encoding = in_array($this->config['Marketplace_Id'], ['AAHKV2X7AFYLW', 'A1VC38T7YXB528']) ?
+            'UTF-8' : 'iso-8859-16';
+
+        $encoder = (new CharsetConverter())->inputEncoding('UTF-8')->outputEncoding($encoding);
         $csv = Writer::createFromFileObject(new SplTempFileObject());
-        $csv->setOutputBOM(Reader::BOM_UTF8);
         $csv->setDelimiter("\t");
-        CharsetConverter::addTo($csv, 'UTF-8', $encoding);
+        $csv->addFormatter($encoder);
 
         $csv->insertOne(['TemplateType=' . $template, 'Version=' . $version, 'TemplateSignature=' . $signature]);
 
@@ -1147,6 +1175,8 @@ class MWSClient
                 array_values($product->toArray())
             );
         }
+//        $csv->output(date('Y-m-d') . '.csv');
+//        die;
 
         return $this->SubmitFeed('_POST_FLAT_FILE_LISTINGS_DATA_', $csv);
 
@@ -1159,6 +1189,7 @@ class MWSClient
      * @return array
      *
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function ListFinancialEventsByOrderId($AmazonOrderId)
     {
@@ -1297,7 +1328,12 @@ class MWSClient
             ];
             if ($endPoint['action'] === 'SubmitFeed') {
                 $headers['Content-MD5'] = base64_encode(md5($body, true));
-                $headers['Content-Type'] = 'text/xml; charset=iso-8859-1';
+                if (in_array($this->config['Marketplace_Id'], ['AAHKV2X7AFYLW', 'A1VC38T7YXB528'])) {
+                    $headers['Content-Type'] = 'text/xml; charset=UTF-8';
+                } else {
+                    $headers['Content-Type'] = 'text/xml; charset=iso-8859-16';
+                }
+
                 $headers['Host'] = $this->config['Region_Host'];
                 unset(
                     $query['MarketplaceId.Id.1'],
