@@ -7,6 +7,7 @@ use Exception;
 class MWSEndPoint
 {
     const FINANCES_API_PATH = '/Finances/2015-05-01';
+
     public static $endpoints = [
         'ListRecommendations' => [
             'method' => 'POST',
@@ -59,6 +60,12 @@ class MWSEndPoint
         'GetReportList' => [
             'method' => 'POST',
             'action' => 'GetReportList',
+            'path' => '/',
+            'date' => '2009-01-01'
+        ],
+        'GetReportListByNextToken' => [
+            'method' => 'POST',
+            'action' => 'GetReportListByNextToken',
             'path' => '/',
             'date' => '2009-01-01'
         ],

@@ -1286,6 +1286,50 @@ class MWSClient
     }
 
     /**
+     * @param array $ReportTypeList
+     * @param $limit
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function GetReportRequestList($ReportTypeList = null, $limit = null)
+    {
+        $array = [];
+        $counter = 1;
+        if (count($ReportTypeList)) {
+            foreach ($ReportTypeList as $ReportType) {
+                $array['ReportTypeList.Type.' . $counter] = $ReportType;
+                $counter++;
+            }
+        }
+        $array['MaxCount'] = $limit;
+        return $this->request('GetReportRequestList', $array);
+    }
+
+    /**
+     * @param array $ReportTypeList
+     * @param $nextToken
+     * @param $limit
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function GetReportListByNextToken($ReportTypeList = [], $nextToken = null, $limit = null)
+    {
+        $array = [];
+        $counter = 1;
+        if (count($ReportTypeList)) {
+            foreach ($ReportTypeList as $ReportType) {
+                $array['ReportTypeList.Type.' . $counter] = $ReportType;
+                $counter++;
+            }
+        }
+        if ($nextToken != null) {
+            $array['NextToken'] = $nextToken;
+        }
+        $array['MaxCount'] = $limit;
+        return $this->request('GetReportListByNextToken', $array);
+    }
+
+    /**
      * Request MWS
      *
      * @param $endPoint
@@ -1294,8 +1338,9 @@ class MWSClient
      * @param bool $raw
      * @return string|array
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
      */
-    private function request($endPoint, array $query = [], $body = null, $raw = false)
+    protected function request($endPoint, array $query = [], $body = null, $raw = false)
     {
         $endPoint = MWSEndPoint::get($endPoint);
         $merge = [
