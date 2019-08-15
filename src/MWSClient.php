@@ -18,7 +18,7 @@ class MWSClient
     const SIGNATURE_VERSION = '2';
     const DATE_FORMAT = "Y-m-d\TH:i:s.\\0\\0\\0\\Z";
     const APPLICATION_NAME = 'MCS/MwsClient';
-    private $config = [
+    protected $config = [
         'Seller_Id' => null,
         'Marketplace_Id' => null,
         'Access_Key_ID' => null,
@@ -26,7 +26,7 @@ class MWSClient
         'MWSAuthToken' => null,
         'Application_Version' => '0.0.*'
     ];
-    private $MarketplaceIds = [
+    protected $MarketplaceIds = [
         'A2EUQ1WTGCTBG2' => 'mws.amazonservices.ca',
         'ATVPDKIKX0DER' => 'mws.amazonservices.com',
         'A1AM78C64UM0Y8' => 'mws.amazonservices.com.mx',
@@ -939,7 +939,7 @@ class MWSClient
      * @param string $customRoot [$customRoot = 'AmazonEnvelope']
      * @return \Spatie\ArrayToXml\type
      */
-    private function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
+    protected function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
     {
         return ArrayToXml::convert($array, $customRoot);
     }
@@ -949,7 +949,7 @@ class MWSClient
      * @param string $xmlstring
      * @return array
      */
-    private function xmlToArray($xmlstring)
+    protected function xmlToArray($xmlstring)
     {
         return json_decode(json_encode(simplexml_load_string($xmlstring)), true);
     }
