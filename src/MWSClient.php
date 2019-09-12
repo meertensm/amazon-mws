@@ -1,10 +1,11 @@
 <?php
-namespace MCS;
+
+namespace MaiorADV;
 
 use DateTime;
 use Exception;
 use DateTimeZone;
-use MCS\MWSEndPoint;
+use MaiorADV\MWSEndPoint;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use SplTempFileObject;
