@@ -1,11 +1,11 @@
 <?php
 
-namespace MaiorADV;
+namespace MCS;
 
 use DateTime;
 use Exception;
 use DateTimeZone;
-use MaiorADV\MWSEndPoint;
+use MCS\MWSEndPoint;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use SplTempFileObject;
@@ -18,7 +18,7 @@ class MWSClient{
     const SIGNATURE_METHOD = 'HmacSHA256';
     const SIGNATURE_VERSION = '2';
     const DATE_FORMAT = "Y-m-d\TH:i:s.\\0\\0\\0\\Z";
-    const APPLICATION_NAME = 'MaiorADV/MwsClient';
+    const APPLICATION_NAME = 'MCS/MwsClient';
 
     private $config = [
         'Seller_Id' => null,
