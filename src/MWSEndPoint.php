@@ -1,4 +1,5 @@
 <?php
+
 namespace MCS;
 
 use Exception;
