@@ -381,8 +381,13 @@ class MWSClient{
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
-    ], $FulfillmentChannels = 'MFN', DateTime $till = null)
+    ], $FulfillmentChannels = 'MFN', DateTime $till = null, DateTime $updateAfter = null, DateTime $updateBefore = null)
     {
+		
+		if( $updateAfter != null ){
+			 $query['LastUpdatedAfter'] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
+		}
+		
         $query = [
             'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
         ];
