@@ -1,6 +1,6 @@
 <?php
 
-namespace MaiorADV;
+namespace MCS;
 
 use Exception;
 
