@@ -379,21 +379,25 @@ class MWSClient{
      * @param object DateTime $till, end of time frame
      * @return array
      */
-    public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
+    public function ListOrders(DateTime $from = null, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
     ], $FulfillmentChannels = 'MFN', DateTime $till = null, DateTime $updateAfter = null, DateTime $updateBefore = null)
     {
 		
 		if( $updateAfter != null ){
-			 $query['LastUpdatedAfter'] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
+			 $query['LastUpdatedAfter'] = gmdate(self::DATE_FORMAT, $updateAfter->getTimestamp());
 		}
 		
-        $query = [
-            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
-        ];
+		if( $from != null ){
+			$query = ['CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())];
+		}
 
         if ($till !== null) {
           $query['CreatedBefore'] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
+        }
+		
+		 if ($updateBefore !== null) {
+          $query['LastUpdatedBefore'] = gmdate(self::DATE_FORMAT, $updateBefore->getTimestamp());
         }
 
         $counter = 1;
