@@ -1,5 +1,5 @@
 {
-    "name": "mcs/amazon-mws",
+    "name": "maioradv/amazon-mws",
     "description": "Library to interface with Amazon MWS",
     "license": "MIT",
     "keywords": ["amazon", "mws"],
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MCS\\": "src"
+            "MaiorADV\\": "src"
         }
     }
 }
