@@ -1,13 +1,13 @@
 {
-    "name": "mcs/amazon-mws",
-    "description": "Library to interface with Amazon MWS",
+    "name": "maioradv/amazon-mws",
+    "description": "Library to interface with Amazon MWS based on mcs/amazon-mws",
     "license": "MIT",
     "keywords": ["amazon", "mws"],
     "minimum-stability": "dev",
     "authors": [
         {
-            "name": "Michiel Meertens",
-            "email": "meertensmichiel28@gmail.com"
+            "name": "Maior ADV",
+            "email": "info@maioradv.com"
         }
     ],
     "require": {
