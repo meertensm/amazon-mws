@@ -381,14 +381,14 @@ class MWSClient{
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
-    ], $FulfillmentChannels = 'MFN', DateTime $till = null)
+    ], $FulfillmentChannels = 'MFN', DateTime $till = null, $fromQueryAttr = 'CreatedAfter', $tillQueryAttr = 'CreatedBefore')
     {
         $query = [
-            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
+            $fromQueryAttr => gmdate(self::DATE_FORMAT, $from->getTimestamp())
         ];
 
         if ($till !== null) {
-          $query['CreatedBefore'] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
+          $query[$tillQueryAttr] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
         }
 
         $counter = 1;
