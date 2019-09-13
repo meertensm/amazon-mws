@@ -381,14 +381,14 @@ class MWSClient{
      */
     public function ListOrders(DateTime $from, $allMarketplaces = false, $states = [
         'Unshipped', 'PartiallyShipped'
-    ], $FulfillmentChannels = 'MFN', DateTime $till = null)
+    ], $FulfillmentChannels = 'MFN', DateTime $till = null, $fromQueryAttr = 'CreatedAfter', $tillQueryAttr = 'CreatedBefore')
     {
         $query = [
-            'CreatedAfter' => gmdate(self::DATE_FORMAT, $from->getTimestamp())
+            $fromQueryAttr => gmdate(self::DATE_FORMAT, $from->getTimestamp())
         ];
 
         if ($till !== null) {
-          $query['CreatedBefore'] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
+          $query[$tillQueryAttr] = gmdate(self::DATE_FORMAT, $till->getTimestamp());
         }
 
         $counter = 1;
@@ -1170,6 +1170,63 @@ class MWSClient{
 	    }
 	    
 	    return $result;
+    }
+
+    /**
+	 * Get eligible shipping services
+	 *
+	 * @param array $shipmentRequestDetails
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+    public function GetEligibleShippingServices($shipmentRequestDetails = []) 
+    {
+	    $query = [
+		    'MarketplaceId' => $this->config['Marketplace_Id']
+	    ];
+	
+	    $query += $shipmentRequestDetails;
+	
+	    $response = $this->request(
+		    'GetEligibleShippingServices',
+		    $query
+	    );
+	
+	    $result = [];
+	    if (isset($response['GetEligibleShippingServicesResult']['ShippingServiceList'])) {
+		    return $response['GetEligibleShippingServicesResult']['ShippingServiceList'];
+	    }
+	    
+	    return $result;
+    }
+
+    /**
+	 * create shipment
+	 *
+	 * @param array $shipmentRequestDetails
+	 *
+	 * @return array
+	 * @throws Exception
+	 */
+    public function CreateShipment($shipmentRequestDetails = [])
+    {    
+	    $query = [
+		    'MarketplaceId' => $this->config['Marketplace_Id']
+	    ];
+	
+	    $query += $shipmentRequestDetails;
+	
+	    $response = $this->request(
+		    'CreateShipment',
+		    $query
+	    );
+	
+	    if (isset($response['CreateShipmentResult']['Shipment'])) {
+		    return $response['CreateShipmentResult']['Shipment'];
+	    }
+	    
+	    return [];
     }
 
     /**
