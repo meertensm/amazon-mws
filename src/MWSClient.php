@@ -1017,6 +1017,7 @@ class MWSClient
                     $reader->setHeaderOffset(0);
                     $headers = $reader->getHeader();
                     $statement = new \League\Csv\Statement;
+                    $result = array();
                     foreach ($statement->process($reader) as $row) {
                         $result[] = array_combine($headers, $row);
                     }
