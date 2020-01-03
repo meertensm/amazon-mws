@@ -191,6 +191,26 @@ class MWSClient{
         return $array;
 
     }
+
+	/**
+     * Return related events
+     * 
+     * @param string $AmazonOrderId
+     * @return array if the order is found, false if not
+     */
+    public function ListFinancialEvents($AmazonOrderId)
+    {
+        $response = $this->request('ListFinancialEvents', [
+            'AmazonOrderId' => $AmazonOrderId
+        ]);
+
+        if (isset($response['ListFinancialEventsResult']['FinancialEvents'])) {
+            return $response['ListFinancialEventsResult']['FinancialEvents'];
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Returns lowest priced offers for a single product, based on ASIN.
      * @param string $asin
