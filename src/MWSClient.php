@@ -94,7 +94,7 @@ class MWSClient
         try {
             $this->ListOrderItems('validate');
         } catch (Exception $e) {
-            if ($e->getMessage() == 'Invalid AmazonOrderId: validate') {
+            if ($e->getMessage() == 'Invalid AmazonOrderId: validate' || $e->getMessage() == 'The order id you have requested is not valid.') {
                 return true;
             } else {
                 return false;
@@ -1023,6 +1023,7 @@ class MWSClient
                     $reader->setHeaderOffset(0);
                     $headers = $reader->getHeader();
                     $statement = new \League\Csv\Statement;
+                    $result = array();
                     foreach ($statement->process($reader) as $row) {
                         $result[] = array_combine($headers, $row);
                     }
