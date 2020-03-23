@@ -94,7 +94,7 @@ class MWSClient{
         try{
             $this->ListOrderItems('validate');
         } catch(Exception $e) {
-            if ($e->getMessage() == 'Invalid AmazonOrderId: validate') {
+            if ($e->getMessage() == 'The order id you have requested is not valid') {
                 return true;
             } else {
                 return false;
