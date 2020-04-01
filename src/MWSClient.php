@@ -94,7 +94,7 @@ class MWSClient{
         try{
             $this->ListOrderItems('validate');
         } catch(Exception $e) {
-            if ($e->getMessage() == 'The order id you have requested is not valid.') {
+            if ($e->getCode() == 'InvalidParameterValue') {
                 return true;
             } else {
                 return false;
