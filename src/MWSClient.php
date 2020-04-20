@@ -1137,11 +1137,12 @@ class MWSClient{
 	 * Get a list's inventory for Amazon's fulfillment
 	 *
 	 * @param array $sku_array
-	 *
+	 * @param date $queryStartDateTime
+     * 
 	 * @return array
 	 * @throws Exception
 	 */
-    public function ListInventorySupply($sku_array = []){
+    public function ListInventorySupply($sku_array = [], $queryStartDateTime = false){
 	
 	    if (count($sku_array) > 50) {
 		    throw new Exception('Maximum amount of SKU\'s for this call is 50');
@@ -1151,7 +1152,11 @@ class MWSClient{
 	    $query = [
 		    'MarketplaceId' => $this->config['Marketplace_Id']
 	    ];
-	
+    
+        if($queryStartDateTime ) {
+            $query['QueryStartDateTime'] =  $queryStartDateTime;
+        }
+        
 	    foreach($sku_array as $key){
 		    $query['SellerSkus.member.' . $counter] = $key;
 		    $counter++;
