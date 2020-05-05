@@ -75,25 +75,6 @@ $result = $client->GetMatchingProductForId([
 print_r($result);
 ```
 
-### Create or update a product
-
-```php
-$product = new MCS\MWSProduct();
-$product->sku = 'TESTNOTFORSALE';
-$product->price = '1000.00';
-$product->product_id = 'B0031S9***';
-$product->product_id_type = 'ASIN';
-$product->condition_type = 'New';
-$product->quantity = 10;
-
-if ($product->validate()) {
-    // You can also submit an array of MWSProduct objects
-    $result = $client->postProduct($product);    
-} else {
-    $errors = $product->getValidationErrors();        
-}  
-```
-
 ### Create or update a marketplace product
 
 ```php
@@ -194,7 +175,6 @@ public function uploadAmazon(string $productType, Product $product, int $product
         '2019.0501',
         'SE9NRV9MSUdIVElOR19BTkRfTEFNUFM='
     );
-    Yii::info($postItems, $product->id . '上传产品数据');
     return $feed;
 }
 ```

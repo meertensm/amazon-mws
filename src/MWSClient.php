@@ -6,7 +6,6 @@ use DateTime;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
-use League\Csv\CharsetConverter;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use Spatie\ArrayToXml\ArrayToXml;
@@ -894,8 +893,8 @@ class MWSClient
      * @param string $FeedType (http://docs.developer.amazonservices.com/en_US/feeds/Feeds_FeedType.html)
      * @param mixed $feedContent Array will be converted to xml using https://github.com/spatie/array-to-xml. Strings will not be modified.
      * @param boolean $debug Return the generated xml and don't send it to amazon
+     * @param array $options
      * @return array
-     * @throws Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function SubmitFeed($FeedType, $feedContent, $debug = false, $options = [])
@@ -943,11 +942,11 @@ class MWSClient
      * Convert an array to xml
      * @param $array array to convert
      * @param string $customRoot [$customRoot = 'AmazonEnvelope']
-     * @return \Spatie\ArrayToXml\type
+     * @return string
      */
     protected function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
     {
-        return ArrayToXml::convert($array, $customRoot);
+        return ArrayToXml::convert($array, $customRoot, true, 'UTF-8');
     }
 
     /**
@@ -1023,7 +1022,7 @@ class MWSClient
                     $reader->setHeaderOffset(0);
                     $headers = $reader->getHeader();
                     $statement = new \League\Csv\Statement;
-                    $result = array();
+                    $result = [];
                     foreach ($statement->process($reader) as $row) {
                         $result[] = array_combine($headers, $row);
                     }
@@ -1162,31 +1161,21 @@ class MWSClient
         if (!is_array($MWSProduct)) {
             $MWSProduct = [$MWSProduct];
         }
-
-        $encoding = in_array($this->config['Marketplace_Id'], ['AAHKV2X7AFYLW', 'A1VC38T7YXB528']) ?
-            'UTF-8' : 'iso-8859-16';
-
-        $encoder = (new CharsetConverter())->inputEncoding('UTF-8')->outputEncoding($encoding);
         $csv = Writer::createFromFileObject(new SplTempFileObject());
         $csv->setDelimiter("\t");
-        $csv->addFormatter($encoder);
 
         $csv->insertOne(['TemplateType=' . $template, 'Version=' . $version, 'TemplateSignature=' . $signature]);
 
         $header = array_keys($MWSProduct[0]->toArray());
 
         $csv->insertOne($header);
-
         foreach ($MWSProduct as $product) {
-            $csv->insertOne(
-                array_values($product->toArray())
-            );
+            $csv->insertOne(array_values($product->toArray()));
         }
 //        $csv->output(date('Y-m-d') . '.csv');
 //        die;
 
         return $this->SubmitFeed('_POST_FLAT_FILE_LISTINGS_DATA_', $csv);
-
     }
 
     /**
