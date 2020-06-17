@@ -41,7 +41,9 @@ class MWSClient{
         'A1VC38T7YXB528' => 'mws.amazonservices.jp',
         'AAHKV2X7AFYLW' => 'mws.amazonservices.com.cn',
         'A39IBJ37TRP1C6' => 'mws.amazonservices.com.au',
-	'A2Q3Y263D00KWC' => 'mws.amazonservices.com'
+	'A2Q3Y263D00KWC' => 'mws.amazonservices.com',
+        'A2VIGQ35RCS4UG' => 'mws.amazonservices.ae',
+        'A19VAU5U5O7RUS' => 'mws-fe.amazonservices.com'
     ];
 
     protected $debugNextFeed = false;
