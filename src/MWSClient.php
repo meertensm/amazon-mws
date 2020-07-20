@@ -18,6 +18,7 @@ class MWSClient{
     const SIGNATURE_VERSION = '2';
     const DATE_FORMAT = "Y-m-d\TH:i:s.\\0\\0\\0\\Z";
     const APPLICATION_NAME = 'MCS/MwsClient';
+	private $headers_call;
 
     private $config = [
         'Seller_Id' => null,
@@ -1181,6 +1182,12 @@ class MWSClient{
 	    
 	    return $result;
     }
+	
+	
+	public function getHeadersCall(){
+		return $this->headers_call;
+	}
+	
 
     /**
      * Request MWS
@@ -1271,11 +1278,9 @@ class MWSClient{
                 $requestOptions
             );
 
-
-
             $body = (string) $response->getBody();
-
-
+			$this->headers_call[$endPoint['action']] = $response->getHeaders();
+			
             if ($raw) {
                 return $body;
             } else if (strpos(strtolower($response->getHeader('Content-Type')[0]), 'xml') !== false) {
