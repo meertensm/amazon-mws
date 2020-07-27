@@ -1043,7 +1043,7 @@ class MWSClient{
      * @param $customRoot [$customRoot = 'AmazonEnvelope']
      * @return sting
      */
-    private function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
+    public function arrayToXml(array $array, $customRoot = 'AmazonEnvelope')
     {
         return ArrayToXml::convert($array, $customRoot);
     }
@@ -1053,7 +1053,7 @@ class MWSClient{
      * @param string $xmlstring
      * @return array
      */
-    private function xmlToArray($xmlstring)
+    public function xmlToArray($xmlstring)
     {
         return json_decode(json_encode(simplexml_load_string($xmlstring)), true);
     }
@@ -1195,7 +1195,7 @@ class MWSClient{
     /**
      * Request MWS
      */
-    private function request($endPoint, array $query = [], $body = null, $raw = false)
+    public function request($endPoint, array $query = [], $body = null, $raw = false)
     {
 
         $endPoint = MWSEndPoint::get($endPoint);
