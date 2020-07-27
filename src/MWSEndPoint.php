@@ -151,7 +151,19 @@ class MWSEndPoint{
             'action' => 'GetLowestPricedOffersForASIN',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
-        ]
+        ],
+        'ListAllFulfillmentOrders' => [
+            'method' => 'POST',
+            'action' => 'ListAllFulfillmentOrders',
+            'path' => '/FulfillmentOutboundShipment/2010-10-01',
+            'date' => '2010-10-01'
+        ],
+        'ListAllFulfillmentOrdersByNextToken' => [
+            'method' => 'POST',
+            'action' => 'ListAllFulfillmentOrdersByNextToken',
+            'path' => '/ListAllFulfillmentOrdersByNextToken/2010-10-01',
+            'date' => '2010-10-01'
+        ],
     ];
 
     public static function get($key)
