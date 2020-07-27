@@ -166,6 +166,16 @@ class MWSEndPoint{
         ],
     ];
 
+    /**
+     * @param  mixed $key
+     * 
+     * @return bool     
+     */
+    public static function isset($key): bool
+    {
+        return isset(self::$endpoints[$key]);
+    }
+
     public static function get($key)
     {
         if (isset(self::$endpoints[$key])) {
