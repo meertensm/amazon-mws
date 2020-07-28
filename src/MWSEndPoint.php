@@ -1,7 +1,8 @@
 <?php
+
 namespace MCS;
 
-use Exception;
+use \Exception;
 
 class MWSEndPoint{
 
@@ -162,6 +163,12 @@ class MWSEndPoint{
             'method' => 'POST',
             'action' => 'ListAllFulfillmentOrdersByNextToken',
             'path' => '/ListAllFulfillmentOrdersByNextToken/2010-10-01',
+            'date' => '2010-10-01'
+        ],
+        'CreateFulfillmentOrder' => [
+            'method' => 'POST',
+            'action' => 'CreateFulfillmentOrder',
+            'path' => '/FulfillmentOutboundShipment/2010-10-01',
             'date' => '2010-10-01'
         ],
     ];
