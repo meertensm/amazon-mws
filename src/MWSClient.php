@@ -1355,16 +1355,11 @@ class MWSClient {
                 $this->client = new Client();
             }
 
-            dump($requestOptions);
-            
-
             $response = $this->client->request(
                 $endPoint['method'],
                 $this->config['Region_Url'] . $endPoint['path'],
                 $requestOptions
             );
-
-            dump($response);
 
             $body = (string) $response->getBody();
 
@@ -1377,7 +1372,6 @@ class MWSClient {
             }
 
         } catch (BadResponseException $e) {
-            dump($e);
             if ($e->hasResponse()) {
                 $message = $e->getResponse();
                 $message = $message->getBody();
