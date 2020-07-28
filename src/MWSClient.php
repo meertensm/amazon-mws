@@ -1,4 +1,5 @@
 <?php
+
 namespace MCS;
 
 use DateTime;
@@ -9,10 +10,10 @@ use League\Csv\Reader;
 use League\Csv\Writer;
 use SplTempFileObject;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
 use Spatie\ArrayToXml\ArrayToXml;
+use GuzzleHttp\Exception\BadResponseException;
 
-class MWSClient{
+class MWSClient {
 
     const SIGNATURE_METHOD = 'HmacSHA256';
     const SIGNATURE_VERSION = '2';
@@ -74,7 +75,7 @@ class MWSClient{
         ];
 
         foreach ($required_keys as $key) {
-            if(is_null($this->config[$key])) {
+            if(is_null($this->config[$key]) || strlen($this->config[$key]) === 0) {
                 throw new Exception('Required field ' . $key . ' is not set');
             }
         }
@@ -663,9 +664,8 @@ class MWSClient{
         if (isset($response['GetMatchingProductForIdResult']) && is_array($response['GetMatchingProductForIdResult'])) {
             foreach ($response['GetMatchingProductForIdResult'] as $result) {
 
-                //print_r($product);exit;
-
                 $asin = $result['@attributes']['Id'];
+
                 if ($result['@attributes']['status'] != 'Success') {
                     $not_found[] = $asin;
                 } else {
@@ -677,6 +677,7 @@ class MWSClient{
                     }
                     foreach($products as $product){
                         $array = [];
+                        
                         if(isset($product['Identifiers']['MarketplaceASIN']['ASIN']))
                         {
                             $array["ASIN"] = $product['Identifiers']['MarketplaceASIN']['ASIN'];
@@ -709,16 +710,20 @@ class MWSClient{
                             $array['small_image'] = str_replace('._SL75_', '._SL50_', $image);
                             $array['large_image'] = str_replace('._SL75_', '', $image);;
                         }
+                        
                         if (isset($product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'])) {
                             $array['Parentage'] = 'child';
-                $array['Relationships'] = $product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'];
+                            $array['Relationships'] = $product['Relationships']['VariationParent']['Identifiers']['MarketplaceASIN']['ASIN'];
                         }
-            if (isset($product['Relationships']['VariationChild'])) {
-                    $array['Parentage'] = 'parent';
-                    }
+                        
+                        if (isset($product['Relationships']['VariationChild'])) {
+                            $array['Parentage'] = 'parent';
+                        }
+
                         if (isset($product['SalesRankings']['SalesRank'])) {
                             $array['SalesRank'] = $product['SalesRankings']['SalesRank'];
                         }
+                        
                         $found[$asin][] = $array;
                     }
                 }
@@ -757,8 +762,6 @@ class MWSClient{
             null,
             true
         );
-
-
 
         $languages = [
             'de-DE', 'en-EN', 'es-ES', 'fr-FR', 'it-IT', 'en-US'
@@ -1063,9 +1066,7 @@ class MWSClient{
             'SellerId' => false,
         ];
 
-        //if ($FeedType === '_POST_PRODUCT_PRICING_DATA_') {
         $query['MarketplaceIdList.Id.1'] = $this->config['Marketplace_Id'];
-        //}
 
         $response = $this->request(
             'SubmitFeed',
@@ -1232,6 +1233,14 @@ class MWSClient{
     }
 
     /**
+     * @param array $query
+     */
+    public function CreateFulfillmentOrder(array $query)
+    {
+        return $this->request('CreateFulfillmentOrder', $query);
+    }
+
+    /**
      * @param  mixed $endPoint
      * 
      * @throws \Exception
@@ -1341,10 +1350,13 @@ class MWSClient{
             );
 
             $requestOptions['query'] = $query;
-            
+
             if($this->client === NULL) {
                 $this->client = new Client();
             }
+
+            dump($requestOptions);
+            
 
             $response = $this->client->request(
                 $endPoint['method'],
@@ -1352,10 +1364,9 @@ class MWSClient{
                 $requestOptions
             );
 
-
+            dump($response);
 
             $body = (string) $response->getBody();
-
 
             if ($raw) {
                 return $body;
@@ -1366,6 +1377,7 @@ class MWSClient{
             }
 
         } catch (BadResponseException $e) {
+            dump($e);
             if ($e->hasResponse()) {
                 $message = $e->getResponse();
                 $message = $message->getBody();
