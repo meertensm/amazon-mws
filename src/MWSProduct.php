@@ -1,8 +1,6 @@
 <?php 
 namespace MCS;
 
-use Exception;
-
 class MWSProduct{
 
     public $sku;
