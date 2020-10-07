@@ -660,6 +660,12 @@ class MWSClient{
                         if (isset($product['SalesRankings']['SalesRank'])) {
                             $array['SalesRank'] = $product['SalesRankings']['SalesRank'];
                         }
+                        if (isset($product['AttributeSets']['ItemAttributes']['ItemDimensions'])) {
+                            $array['ItemDimensions'] = array_map(
+                                'floatval',
+                                $product['AttributeSets']['ItemAttributes']['ItemDimensions']
+                            );
+                        }
                         $found[$asin][] = $array;
                     }
                 }
