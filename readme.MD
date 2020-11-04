@@ -110,6 +110,18 @@ $reportId = $client->RequestReport('_GET_MERCHANT_LISTINGS_DATA_');
 $report_content = $client->GetReport($reportId);
 print_r($report_content);
 ```
+
+### Update tracking order
+Update the tracking of an amazon order.
+```php
+$return = $client->setTracking(
+    "XXX-XXXXXXX-XXXXXXX",  //Order id
+    "MRW",                  //Agency
+    "Standard",             //Method
+    "123456231231"          //Tracking
+);
+```
+
 ### Available methods
 View source for detailed argument description.
 All methods starting with an uppercase character are also documented in the [Amazon MWS documentation](http://docs.developer.amazonservices.com/en_US/dev_guide/index.html)
