@@ -93,11 +93,16 @@ class MWSClient{
         try{
             $this->ListOrderItems('validate');
         } catch(Exception $e) {
-            if ($e->getMessage() == 'Invalid AmazonOrderId: validate') {
-                return true;
-            } else {
-                return false;
+            $validResponseSearchs = [
+                'invalid',
+                'not valid',
+            ];
+            foreach ($validResponseSearchs as $responseSearch) {
+                if (strpos(strtolower($e->getMessage()), $responseSearch) !== false) {
+                    return true;
+                }
             }
+            return false;
         }
     }
 
