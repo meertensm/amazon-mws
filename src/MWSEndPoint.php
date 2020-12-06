@@ -1,9 +1,12 @@
 <?php
+
 namespace MCS;
 
 use Exception;
 
-class MWSEndPoint{
+class MWSEndPoint
+{
+    const FINANCES_API_PATH = '/Finances/2015-05-01';
 
     public static $endpoints = [
         'ListRecommendations' => [
@@ -63,6 +66,12 @@ class MWSEndPoint{
         'GetReportList' => [
             'method' => 'POST',
             'action' => 'GetReportList',
+            'path' => '/',
+            'date' => '2009-01-01'
+        ],
+        'GetReportListByNextToken' => [
+            'method' => 'POST',
+            'action' => 'GetReportListByNextToken',
             'path' => '/',
             'date' => '2009-01-01'
         ],
@@ -126,14 +135,12 @@ class MWSEndPoint{
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
         ],
-
         'ListMatchingProducts' => [
             'method' => 'POST',
             'action' => 'ListMatchingProducts',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
         ],
-
         'GetCompetitivePricingForASIN' => [
             'method' => 'POST',
             'action' => 'GetCompetitivePricingForASIN',
@@ -151,6 +158,19 @@ class MWSEndPoint{
             'action' => 'GetLowestPricedOffersForASIN',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
+        ],
+        /**  Finances API section **/
+        'ListFinancialEvents' => [
+            'method' => 'POST',
+            'action' => 'ListFinancialEvents',
+            'path' => self::FINANCES_API_PATH,
+            'date' => '2015-05-01'
+        ],
+        'ListFinancialEventsByNextToken' => [
+            'method' => 'POST',
+            'action' => 'ListFinancialEventsByNextToken',
+            'path' => self::FINANCES_API_PATH,
+            'date' => '2015-05-01'
         ]
     ];
 
