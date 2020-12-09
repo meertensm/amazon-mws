@@ -887,7 +887,7 @@ class MWSClient
         $result = $this->request('GetFeedSubmissionResult', [
             'FeedSubmissionId' => $FeedSubmissionId
         ]);
-        return $result;
+
         if (isset($result['Message']['ProcessingReport'])) {
             return $result['Message']['ProcessingReport'];
         } else {
