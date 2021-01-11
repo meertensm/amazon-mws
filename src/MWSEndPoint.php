@@ -2,7 +2,7 @@
 
 namespace MCS;
 
-use \Exception;
+use Exception;
 
 class MWSEndPoint{
 
@@ -24,6 +24,12 @@ class MWSEndPoint{
             'action' => 'ListMarketplaceParticipations',
             'path' => '/Sellers/2011-07-01',
             'date' => '2011-07-01'
+        ],
+        'FulfillmentOutboundShipment' => [
+            'method' => 'POST',
+            'action' => 'ListAllFulfillmentOrders',
+            'path' => '/FulfillmentOutboundShipment/2010-10-01/',
+            'date' => '2010-10-01'
         ],
         'GetMyPriceForSKU' => [
             'method' => 'POST',
@@ -152,36 +158,8 @@ class MWSEndPoint{
             'action' => 'GetLowestPricedOffersForASIN',
             'path' => '/Products/2011-10-01',
             'date' => '2011-10-01'
-        ],
-        'ListAllFulfillmentOrders' => [
-            'method' => 'POST',
-            'action' => 'ListAllFulfillmentOrders',
-            'path' => '/FulfillmentOutboundShipment/2010-10-01',
-            'date' => '2010-10-01'
-        ],
-        'ListAllFulfillmentOrdersByNextToken' => [
-            'method' => 'POST',
-            'action' => 'ListAllFulfillmentOrdersByNextToken',
-            'path' => '/ListAllFulfillmentOrdersByNextToken/2010-10-01',
-            'date' => '2010-10-01'
-        ],
-        'CreateFulfillmentOrder' => [
-            'method' => 'POST',
-            'action' => 'CreateFulfillmentOrder',
-            'path' => '/FulfillmentOutboundShipment/2010-10-01',
-            'date' => '2010-10-01'
-        ],
+        ]
     ];
-
-    /**
-     * @param  mixed $key
-     * 
-     * @return bool     
-     */
-    public static function isset($key): bool
-    {
-        return isset(self::$endpoints[$key]);
-    }
 
     public static function get($key)
     {
