@@ -1,4 +1,5 @@
 <?php
+
 namespace MCS;
 
 use Exception;
@@ -12,11 +13,23 @@ class MWSEndPoint{
             'path' => '/Recommendations/2013-04-01',
             'date' => '2013-04-01'
         ],
+        'ListFinancialEvents' => [
+            'method' => 'POST',
+            'action' => 'ListFinancialEvents',
+            'path' => '/Finances/2015-05-01',
+            'date' => '2015-05-01'
+        ],
         'ListMarketplaceParticipations' => [
             'method' => 'POST',
             'action' => 'ListMarketplaceParticipations',
             'path' => '/Sellers/2011-07-01',
             'date' => '2011-07-01'
+        ],
+        'FulfillmentOutboundShipment' => [
+            'method' => 'POST',
+            'action' => 'ListAllFulfillmentOrders',
+            'path' => '/FulfillmentOutboundShipment/2010-10-01/',
+            'date' => '2010-10-01'
         ],
         'GetMyPriceForSKU' => [
             'method' => 'POST',

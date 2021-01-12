@@ -12,12 +12,12 @@
     ],
     "require": {
         "php": ">= 5.4",
-        "guzzlehttp/guzzle": "~6.0",
+        "guzzlehttp/guzzle": "~6.3",
         "spatie/array-to-xml": "^2.1",
-        "league/csv": "^8.1"
+        "league/csv": "^9.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7"
+        "phpunit/phpunit": "^8"
     },
     "autoload": {
         "psr-4": {
