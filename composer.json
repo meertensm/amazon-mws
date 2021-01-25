@@ -18,7 +18,7 @@
     "ext-mbstring": "*",
     "ext-json": "*",
     "ext-simplexml": "*",
-    "guzzlehttp/guzzle": "~6.0",
+    "guzzlehttp/guzzle": "*",
     "spatie/array-to-xml": "^2.1",
     "league/csv": "^9",
     "ext-curl": "*"
