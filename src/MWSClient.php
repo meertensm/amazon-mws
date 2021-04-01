@@ -4,7 +4,6 @@ namespace MCS;
 use DateTime;
 use Exception;
 use DateTimeZone;
-use MCS\MWSEndPoint;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use SplTempFileObject;
@@ -145,7 +144,7 @@ class MWSClient{
         return $array;
 
     }
-    
+
         /**
      * Returns the current competitive price of a product, based on SKU.
      * @param array [$sku_array = []]
@@ -423,15 +422,15 @@ class MWSClient{
                 $data['NextToken'] = $response['ListOrdersResult']['NextToken'];
                 return $data;
             }
-        
+
             $response = $response['ListOrdersResult']['Orders']['Order'];
-        
+
             if (array_keys($response) !== range(0, count($response) - 1)) {
                 return [$response];
             }
-        
+
             return $response;
-        
+
         } else {
             return [];
         }
@@ -995,7 +994,7 @@ class MWSClient{
         }
 
 	$purgeAndReplace = isset($options['PurgeAndReplace']) ? $options['PurgeAndReplace'] : false;
-	    
+
         $query = [
             'FeedType' => $FeedType,
             'PurgeAndReplace' => ($purgeAndReplace ? 'true' : 'false'),
@@ -1130,8 +1129,29 @@ class MWSClient{
         }
 
         return false;
-
     }
+
+    /**
+     * Get the report request list
+     *
+     * @param   array                   $query  The query
+     * @return  false|mixed|string      The result
+     * @throws  Exception
+     */
+    public function GetReportRequestList(array $query = [])
+    {
+        // fetch the result
+        $result = $this->request('GetReportRequestList', $query);
+
+        // if there is a result, return it
+        if (isset($result['GetReportRequestListResult']['ReportRequestInfo'])) {
+            return $result['GetReportRequestListResult']['ReportRequestInfo'];
+        }
+
+        // no result, return false
+        return false;
+    }
+
     /**
      * Get a list's inventory for Amazon's fulfillment
      *
@@ -1176,33 +1196,33 @@ class MWSClient{
 	 * @throws Exception
 	 */
     public function ListInventorySupply($sku_array = []){
-	
+
 	    if (count($sku_array) > 50) {
 		    throw new Exception('Maximum amount of SKU\'s for this call is 50');
 	    }
-	
+
 	    $counter = 1;
 	    $query = [
 		    'MarketplaceId' => $this->config['Marketplace_Id']
 	    ];
-	
+
 	    foreach($sku_array as $key){
 		    $query['SellerSkus.member.' . $counter] = $key;
 		    $counter++;
 	    }
-	
+
 	    $response = $this->request(
 		    'ListInventorySupply',
 		    $query
 	    );
-	
+
 	    $result = [];
 	    if (isset($response['ListInventorySupplyResult']['InventorySupplyList']['member'])) {
 		    foreach ($response['ListInventorySupplyResult']['InventorySupplyList']['member'] as $index => $ListInventorySupplyResult) {
 			    $result[$index] = $ListInventorySupplyResult;
 		    }
 	    }
-	    
+
 	    return $result;
     }
 
@@ -1284,7 +1304,7 @@ class MWSClient{
             );
 
             $requestOptions['query'] = $query;
-            
+
             if($this->client === NULL) {
                 $this->client = new Client();
             }
@@ -1322,7 +1342,7 @@ class MWSClient{
             throw new Exception($message);
         }
     }
-    
+
     public function setClient(Client $client) {
         $this->client = $client;
     }
