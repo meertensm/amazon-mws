@@ -1,4 +1,4 @@
-# Deprecation Notice:
+# Deprecation Notice
 **Amazon Marketplace Web Service (MWS) will no longer be available after December 31, 2023. All MWS developers must migrate to Selling Partner API (SP-API) to avoid service disruptions. Refer to the Migration Hub for more information**
 
 
