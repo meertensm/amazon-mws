@@ -1,6 +1,7 @@
 # Deprecation Notice
 **Amazon Marketplace Web Service (MWS) will no longer be available after December 31, 2023. All MWS developers must migrate to Selling Partner API (SP-API) to avoid service disruptions. Refer to the Migration Hub for more information**
 
+Please visit [this repository](https://github.com/jlevers/selling-partner-api) from [jlevers](https://github.com/jlevers) if you are searching for a good SP-API client
 
 ## Amazon Marketplace Webservices
 [![Latest Stable Version](https://poser.pugx.org/mcs/amazon-mws/v/stable)](https://packagist.org/packages/mcs/amazon-mws) [![Latest Unstable Version](https://poser.pugx.org/mcs/amazon-mws/v/unstable)](https://packagist.org/packages/mcs/amazon-mws) [![License](https://poser.pugx.org/mcs/amazon-mws/license)](https://packagist.org/packages/mcs/amazon-mws) [![Total Downloads](https://poser.pugx.org/mcs/amazon-mws/downloads)](https://packagist.org/packages/mcs/amazon-mws)
