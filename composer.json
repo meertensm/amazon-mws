@@ -14,8 +14,11 @@
         "php": ">= 5.4",
         "guzzlehttp/guzzle": "~6.0",
         "spatie/array-to-xml": "^2.1",
-        "league/csv": "^8.1"
-    },
+        "league/csv": "^8.1",
+        "ext-json": "*",
+		"ext-simplexml": "*",
+		"ext-mbstring": "*"
+	},
     "require-dev": {
         "phpunit/phpunit": "^7"
     },
