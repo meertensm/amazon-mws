@@ -18,6 +18,7 @@ class MWSClient{
     const SIGNATURE_VERSION = '2';
     const DATE_FORMAT = "Y-m-d\TH:i:s.\\0\\0\\0\\Z";
     const APPLICATION_NAME = 'MCS/MwsClient';
+    const ORDER_ID_NOT_VALID = 'The order id you have requested is not valid.';
 
     private $config = [
         'Seller_Id' => null,
@@ -93,7 +94,7 @@ class MWSClient{
         try{
             $this->ListOrderItems('validate');
         } catch(Exception $e) {
-            if ($e->getMessage() == 'Invalid AmazonOrderId: validate') {
+            if ($e->getMessage() == self::ORDER_ID_NOT_VALID) {
                 return true;
             } else {
                 return false;
