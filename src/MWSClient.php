@@ -1292,4 +1292,55 @@ class MWSClient{
     public function setClient(Client $client) {
         $this->client = $client;
     }
+
+    /**
+     * Update tracking ordeer.
+     * @param string $amazon_order_id Id order amazon
+     * @param string $agencia Carrier
+     * @param string $metodo Shipping methond name
+     * @param string $tracking Tracking
+     */
+    public function setTracking(
+        $amazon_order_id,
+        $agencia,
+        $metodo,
+        $tracking,
+        $fecha = ""
+    ){
+
+        /**
+         * Ejemple:
+            $mws->setTracking(
+                "xxx-xxxxxxx-xxxxxxx",
+                "MRW",
+                "Standard",
+                "123456231231"
+            );
+         */
+
+        if($fecha == ""){
+            $fecha = gmdate("Y-m-d\TH:i:s.\\0\\0\\0\\Z", time());
+        }else{
+            $fecha = gmdate("Y-m-d\TH:i:s.\\0\\0\\0\\Z", $fecha);
+        }
+
+        $feed = array(
+            'MessageType'   => 'OrderFulfillment',
+            'Message'   => array(
+                'MessageID' => 1,
+                'OrderFulfillment' => array(
+                    'AmazonOrderID'     => $amazon_order_id,  //Id del pedido de amazon
+                    'FulfillmentDate'   => $fecha,
+                    'FulfillmentData'   => array(
+                        'CarrierName'           => $agencia,    //Transportista
+                        'ShippingMethod'        => $metodo,     //Metodo
+                        'ShipperTrackingNumber' => $tracking    //Tracking
+                    )
+                )
+            )
+        );
+
+        return $this->SubmitFeed('_POST_ORDER_FULFILLMENT_DATA_',$feed);
+
+    }
 }
