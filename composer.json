@@ -4,12 +4,6 @@
     "license": "MIT",
     "keywords": ["amazon", "mws"],
     "minimum-stability": "dev",
-    "authors": [
-        {
-            "name": "Michiel Meertens",
-            "email": "meertensmichiel28@gmail.com"
-        }
-    ],
     "require": {
         "php": ">= 5.4",
         "guzzlehttp/guzzle": "~6.0",
